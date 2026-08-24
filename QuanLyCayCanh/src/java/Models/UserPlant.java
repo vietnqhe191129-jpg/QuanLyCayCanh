@@ -3,9 +3,9 @@ package Models;
 import java.sql.Date;
 
 public class UserPlant {
-    private int plantID;
-    private int userID;
-    private Integer categoryID; // can be null
+    private int plantId;
+    private int userId;
+    private Integer categoryId; // can be null
     private String customName;
     private String locationInHome;
     private Date plantedDate;
@@ -17,9 +17,9 @@ public class UserPlant {
     }
 
     public UserPlant(int plantID, int userID, Integer categoryID, String customName, String locationInHome, Date plantedDate, String healthStatus, String imageUrl, String note) {
-        this.plantID = plantID;
-        this.userID = userID;
-        this.categoryID = categoryID;
+        this.plantId = plantID;
+        this.userId = userID;
+        this.categoryId = categoryID;
         this.customName = customName;
         this.locationInHome = locationInHome;
         this.plantedDate = plantedDate;
@@ -28,28 +28,28 @@ public class UserPlant {
         this.note = note;
     }
 
-    public int getPlantID() {
-        return plantID;
+    public int getPlantId() {
+        return plantId;
     }
 
-    public void setPlantID(int plantID) {
-        this.plantID = plantID;
+    public void setPlantId(int plantId) {
+        this.plantId = plantId;
     }
 
-    public int getUserID() {
-        return userID;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public Integer getCategoryID() {
-        return categoryID;
+    public Integer getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategoryID(Integer categoryID) {
-        this.categoryID = categoryID;
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getCustomName() {
