@@ -87,11 +87,11 @@
                     </a>
 
 
-                    <a href="${pageContext.request.contextPath}/add-plant"
+                    <a href="${pageContext.request.contextPath}/my-garden"
                        class="btn btn-primary-app">
 
-                        <i class="fa-solid fa-plus me-1"></i>
-                        Thêm cây
+                        <i class="fa-solid fa-house me-1"></i>
+                        Home
 
                     </a>
 
@@ -105,7 +105,7 @@
                  SUMMARY
                  ===================================================== --%>
 
-            <div class="row g-3 mb-5">
+<!--              <div class="row g-3 mb-5">
 
 
                 <%-- Tổng số cây --%>
@@ -186,11 +186,11 @@
 
                     </div>
 
-                </div>
+                </div>-->
 
 
 
-                <%-- Cây cần chú ý --%>
+<!--                <%-- Cây cần chú ý --%>
 
                 <div class="col-md-4">
 
@@ -235,8 +235,8 @@
 
                 </div>
 
-            </div>
-
+            </div> 
+                            -->
 
 
             <%-- =====================================================
@@ -320,7 +320,8 @@
 
                         <c:set var="schedule"
                                value="${scheduleMap[plant.plantId]}" />
-
+                        <c:set var="overdueCount"
+                               value="${overdueCountMap[plant.plantId]}" />
 
                         <%-- Trạng thái tưới --%>
 
@@ -555,16 +556,16 @@
                                                         Lịch tưới tiếp theo
                                                     </div>
 
-<!--                                                    <button type="button"
-                                                            class="btn-edit-schedule"
-                                                            title="Sửa lịch tưới"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#scheduleModal${plant.plantId}"
-                                                            onclick="event.stopPropagation();">
-
-                                                        <i class="fa-solid fa-pen"></i>
-
-                                                    </button>-->
+                                                    <!--                                                    <button type="button"
+                                                                                                                class="btn-edit-schedule"
+                                                                                                                title="Sửa lịch tưới"
+                                                                                                                data-bs-toggle="modal"
+                                                                                                                data-bs-target="#scheduleModal${plant.plantId}"
+                                                                                                                onclick="event.stopPropagation();">
+                                                    
+                                                                                                            <i class="fa-solid fa-pen"></i>
+                                                    
+                                                                                                        </button>-->
 
                                                 </div>
 
@@ -983,18 +984,124 @@
 
                                                 <%-- HEALTH STATUS --%>
 
-                                                <div class="detail-row">
+                                                <div class="health-edit-section">
 
-                                                    <div class="detail-label">
-
-                                                        Tình trạng
-
+                                                    <div class="detail-section-title">
+                                                        <i class="fa-solid fa-heart-pulse me-1"></i>
+                                                        Tình trạng cây
                                                     </div>
 
 
-                                                    <div class="detail-value">
+                                                    <form action="${pageContext.request.contextPath}/UpdatePlantStatus"
+                                                          method="POST">
 
-                                                        ${plant.healthStatus}
+                                                        <input type="hidden"
+                                                               name="plantId"
+                                                               value="${plant.plantId}">
+
+
+                                                        <div class="d-flex gap-2 align-items-center">
+
+                                                            <select name="healthStatus"
+                                                                    class="form-select">
+
+                                                                <option value="Khỏe mạnh"
+                                                                        ${plant.healthStatus eq 'Khỏe mạnh'
+                                                                          ? 'selected'
+                                                                          : ''}>
+
+                                                                    Khỏe mạnh
+
+                                                                </option>
+
+
+                                                                <option value="Cần chăm sóc"
+                                                                        ${plant.healthStatus eq 'Cần chăm sóc'
+                                                                          ? 'selected'
+                                                                          : ''}>
+
+                                                                    Cần chăm sóc
+
+                                                                </option>
+
+
+                                                                <option value="Sâu bệnh"
+                                                                        ${plant.healthStatus eq 'Sâu bệnh'
+                                                                          ? 'selected'
+                                                                          : ''}>
+
+                                                                    Sâu bệnh
+
+                                                                </option>
+
+                                                            </select>
+
+
+                                                            <button type="submit"
+                                                                    class="btn btn-primary-app">
+
+                                                                <i class="fa-solid fa-check"></i>
+
+                                                            </button>
+
+                                                        </div>
+
+                                                    </form>
+
+
+                                                    <div class="health-suggestion mt-3">
+
+                                                        <c:choose>
+
+                                                            <c:when test="${overdueCount > 0}">
+
+                                                                <div class="health-suggestion warning">
+
+                                                                    <i class="fa-solid
+                                                                       fa-triangle-exclamation"></i>
+
+                                                                    <div>
+
+                                                                        <strong>
+                                                                            Gợi ý từ hệ thống
+                                                                        </strong>
+
+                                                                        <span>
+                                                                            Cây đang có lịch chăm sóc quá hạn.
+                                                                            Bạn nên kiểm tra tình trạng thực tế.
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </c:when>
+
+
+                                                            <c:otherwise>
+
+                                                                <div class="health-suggestion normal">
+
+                                                                    <i class="fa-solid
+                                                                       fa-circle-check"></i>
+
+                                                                    <div>
+
+                                                                        <strong>
+                                                                            Lịch chăm sóc đang ổn
+                                                                        </strong>
+
+                                                                        <span>
+                                                                            Hiện chưa có lịch tưới quá hạn.
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </c:otherwise>
+
+                                                        </c:choose>
 
                                                     </div>
 

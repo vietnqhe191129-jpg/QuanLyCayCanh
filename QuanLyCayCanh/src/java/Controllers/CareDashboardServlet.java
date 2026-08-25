@@ -87,7 +87,8 @@ public class CareDashboardServlet extends HttpServlet {
 
         Map<Integer, Long> daysUntilWaterMap
                 = new HashMap<>();
-
+        Map<Integer, Integer> overdueCountMap
+                = new HashMap<>();
         LocalDate today = LocalDate.now();
 
         for (UserPlant plant : plants) {
@@ -161,6 +162,18 @@ public class CareDashboardServlet extends HttpServlet {
                         "NO_SCHEDULE"
                 );
             }
+            int overdueCount = 0;
+
+            if ("OVERDUE".equals(
+                    waterStatusMap.get(plant.getPlantId())
+            )) {
+                overdueCount++;
+            }
+
+            overdueCountMap.put(
+                    plant.getPlantId(),
+                    overdueCount
+            );
         }
 
         // ==============================
@@ -185,6 +198,10 @@ public class CareDashboardServlet extends HttpServlet {
                 "daysUntilWaterMap",
                 daysUntilWaterMap
         );
+        request.setAttribute(
+        "overdueCountMap",
+        overdueCountMap
+);
 
         // ==============================
         // FORWARD SANG JSP

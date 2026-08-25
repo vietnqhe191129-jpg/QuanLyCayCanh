@@ -24,6 +24,10 @@
         <servlet-name>WaterScheduleServlet</servlet-name>
         <servlet-class>Controllers.WaterScheduleServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdatePlantStatusServlet</servlet-name>
+        <servlet-class>Controllers.UpdatePlantStatusServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CareServlet</servlet-name>
         <url-pattern>/Care</url-pattern>
@@ -95,5 +99,9 @@
     <servlet-mapping>
         <servlet-name>WaterScheduleServlet</servlet-name>
         <url-pattern>/WaterSchedule</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdatePlantStatusServlet</servlet-name>
+        <url-pattern>/UpdatePlantStatus</url-pattern>
     </servlet-mapping>
 </web-app>

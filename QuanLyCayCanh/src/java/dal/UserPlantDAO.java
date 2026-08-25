@@ -227,4 +227,28 @@ public class UserPlantDAO extends DBContext {
 
     return null;
 }
+    public boolean updateHealthStatus(int plantId, String healthStatus) {
+
+    String sql = """
+        UPDATE UserPlants
+        SET HealthStatus = ?
+        WHERE PlantID = ?
+    """;
+
+    try {
+
+        PreparedStatement ps =
+                connection.prepareStatement(sql);
+
+        ps.setString(1, healthStatus);
+        ps.setInt(2, plantId);
+
+        return ps.executeUpdate() > 0;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return false;
+}
 }

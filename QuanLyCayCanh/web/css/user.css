@@ -747,4 +747,99 @@ body {
 
         border-top: 1px solid var(--border);
     }
+    /* =========================================================
+   HEALTH STATUS EDIT
+   ========================================================= */
+
+.health-edit-section {
+    margin-top: 18px;
+
+    padding: 15px;
+
+    background: #fafbfa;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+
+.health-edit-section .detail-section-title {
+    margin-bottom: 12px;
+}
+
+
+.health-edit-section .form-select {
+    font-size: 0.86rem;
+
+    border-color: #dce3de;
+}
+
+
+.health-edit-section .form-select:focus {
+    border-color: #75a986;
+
+    box-shadow:
+        0 0 0 0.2rem
+        rgba(47, 125, 74, 0.1);
+}
+
+
+.health-edit-section .btn {
+    width: 42px;
+
+    flex-shrink: 0;
+}
+
+
+/* Suggestion */
+
+.health-suggestion {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding: 11px 12px;
+
+    border-radius: 10px;
+
+    font-size: 0.8rem;
+}
+
+
+.health-suggestion i {
+    margin-top: 2px;
+
+    flex-shrink: 0;
+}
+
+
+.health-suggestion strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    font-size: 0.8rem;
+}
+
+
+.health-suggestion span {
+    display: block;
+
+    line-height: 1.45;
+}
+
+
+.health-suggestion.warning {
+    background: #fff7e7;
+
+    color: #8b6621;
+}
+
+
+.health-suggestion.normal {
+    background: #edf7f0;
+
+    color: #39734b;
+}
 }
