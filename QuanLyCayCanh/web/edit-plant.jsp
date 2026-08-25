@@ -36,20 +36,21 @@
             
             <form action="edit-plant" method="POST">
                 <!-- ĐIỂM QUAN TRỌNG: Thẻ ẩn truyền ID cây về Servlet -->
-                <input type="hidden" name="plantID" value="${plant.getPlantID()}">
+                <input type="hidden" name="plantID" value="${plant.getPlantId()}">
 
                 <div class="form-group">
-                    <label>Chọn từ Thư viện mẫu:</label>
-                    <select name="categoryID" class="form-control">
-                        <option value="">-- Tự nhập tên riêng --</option>
-                        <c:forEach items="${listCategory}" var="cat">
-                            <!-- Dùng toán tử 3 ngôi để tự động CHỌN đúng loại cây cũ -->
-                            <option value="${cat.getCategoryID()}" ${plant.getCategoryID() == cat.getCategoryID() ? 'selected' : ''}>
-                                ${cat.getCategoryName()} (${cat.getScientificName()})
-                            </option>
-                        </c:forEach>
-                    </select>
-                </div>
+    <label>Loại cây:</label>
+    <select name="categoryId" class="form-control">
+        <option value="">Không chọn loại cây</option>
+
+        <c:forEach var="category" items="${listCategory}">
+            <option value="${category.categoryID}"
+                    ${plant.categoryId eq category.categoryID ? 'selected' : ''}>
+                ${category.categoryName} - ${category.scientificName}
+            </option>
+        </c:forEach>
+    </select>
+</div>
 
                 <div class="form-group">
                     <label>Tên riêng của cây: *</label>
