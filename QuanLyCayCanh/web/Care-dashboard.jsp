@@ -19,13 +19,22 @@
 
     <title>Chăm Sóc Cây</title>
 
+
+    <!-- Bootstrap -->
+
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
         rel="stylesheet">
 
+
+    <!-- Font Awesome -->
+
     <link
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         rel="stylesheet">
+
+
+    <!-- Custom CSS -->
 
     <link
         href="${pageContext.request.contextPath}/css/user.css"
@@ -35,6 +44,7 @@
 
 
 <body>
+
 
 <div class="container page-shell py-4 py-lg-5">
 
@@ -97,6 +107,7 @@
 
         </div>
 
+
     </div>
 
 
@@ -113,6 +124,7 @@
         <div class="col-md-4">
 
             <div class="summary-card">
+
 
                 <div class="summary-icon green">
 
@@ -134,6 +146,7 @@
 
                 </div>
 
+
             </div>
 
         </div>
@@ -146,6 +159,7 @@
 
             <div class="summary-card">
 
+
                 <div class="summary-icon blue">
 
                     <i class="fa-solid fa-droplet"></i>
@@ -155,11 +169,14 @@
 
                 <div class="summary-value">
 
-                    <c:set var="needCareCount" value="0" />
+
+                    <c:set var="scheduleCount"
+                           value="0" />
 
 
                     <c:forEach var="summaryPlant"
                                items="${plants}">
+
 
                         <c:set var="summarySchedule"
                                value="${scheduleMap[summaryPlant.plantId]}" />
@@ -167,15 +184,17 @@
 
                         <c:if test="${summarySchedule != null}">
 
-                            <c:set var="needCareCount"
-                                   value="${needCareCount + 1}" />
+                            <c:set var="scheduleCount"
+                                   value="${scheduleCount + 1}" />
 
                         </c:if>
+
 
                     </c:forEach>
 
 
-                    ${needCareCount}
+                    ${scheduleCount}
+
 
                 </div>
 
@@ -185,6 +204,7 @@
                     Cây có lịch tưới
 
                 </div>
+
 
             </div>
 
@@ -198,6 +218,7 @@
 
             <div class="summary-card">
 
+
                 <div class="summary-icon red">
 
                     <i class="fa-solid fa-triangle-exclamation"></i>
@@ -207,7 +228,9 @@
 
                 <div class="summary-value">
 
-                    <c:set var="warningCount" value="0" />
+
+                    <c:set var="warningCount"
+                           value="0" />
 
 
                     <c:forEach var="summaryPlant"
@@ -227,6 +250,7 @@
 
                     ${warningCount}
 
+
                 </div>
 
 
@@ -236,9 +260,11 @@
 
                 </div>
 
+
             </div>
 
         </div>
+
 
     </div>
 
@@ -248,28 +274,22 @@
          SECTION HEADER
          ===================================================== --%>
 
-    <div class="d-flex
-                justify-content-between
-                align-items-center
-                mb-3">
+    <div class="section-header mb-3">
 
 
-        <div>
+        <div class="section-title">
 
-            <div class="section-title">
-
-                Cây của tôi
-
-            </div>
-
-
-            <div class="text-muted small">
-
-                Chọn một cây để xem chi tiết.
-
-            </div>
+            Cây của tôi
 
         </div>
+
+
+        <div class="text-muted">
+
+            Chọn một cây để xem chi tiết.
+
+        </div>
+
 
     </div>
 
@@ -318,12 +338,13 @@
 
         </div>
 
+
     </c:if>
 
 
 
     <%-- =====================================================
-         PLANT GRID
+         PLANT LIST
          ===================================================== --%>
 
     <c:if test="${not empty plants}">
@@ -336,19 +357,19 @@
                        items="${plants}">
 
 
-                <%-- Schedule hiện tại của cây --%>
+                <%-- Schedule WATER của cây --%>
 
                 <c:set var="schedule"
                        value="${scheduleMap[plant.plantId]}" />
 
 
-                <%-- Trạng thái WATER của cây --%>
+                <%-- Trạng thái tưới --%>
 
                 <c:set var="waterStatus"
                        value="${waterStatusMap[plant.plantId]}" />
 
 
-                <%-- Số ngày còn lại trước khi tưới --%>
+                <%-- Số ngày tới lần tưới --%>
 
                 <c:set var="daysUntilWater"
                        value="${daysUntilWaterMap[plant.plantId]}" />
@@ -358,13 +379,14 @@
                 <div class="col-sm-6 col-lg-4 col-xl-3">
 
 
-                    <div class="plant-card h-100"
+                    <div class="plant-card"
                          data-bs-toggle="modal"
                          data-bs-target="#plantModal${plant.plantId}">
 
 
+
                         <%-- =====================================================
-                             ẢNH + HEALTH STATUS
+                             IMAGE
                              ===================================================== --%>
 
                         <div class="plant-image-wrapper">
@@ -385,10 +407,11 @@
 
                                 <c:otherwise>
 
-                                    <img
-                                        src="https://via.placeholder.com/500x350?text=Plant"
-                                        class="plant-img"
-                                        alt="Plant Image">
+                                    <div class="plant-image-placeholder">
+
+                                        <i class="fa-solid fa-seedling"></i>
+
+                                    </div>
 
                                 </c:otherwise>
 
@@ -396,6 +419,8 @@
                             </c:choose>
 
 
+
+                            <%-- HEALTH BADGE --%>
 
                             <c:choose>
 
@@ -447,43 +472,48 @@
 
 
                         <%-- =====================================================
-                             NỘI DUNG CARD
+                             CARD BODY
                              ===================================================== --%>
 
-                        <div class="p-3 d-flex flex-column h-100">
+                        <div class="plant-card-body">
 
 
-                            <div class="plant-name mb-1">
-
-                                ${plant.customName}
-
-                            </div>
+                            <div>
 
 
+                                <div class="plant-name">
 
-                            <div class="plant-location mb-3">
+                                    ${plant.customName}
 
-                                <i class="fa-solid fa-location-dot me-1"></i>
-
-
-                                <c:choose>
+                                </div>
 
 
-                                    <c:when test="${not empty plant.locationInHome}">
+                                <div class="plant-location">
 
-                                        ${plant.locationInHome}
-
-                                    </c:when>
+                                    <i class="fa-solid fa-location-dot me-1"></i>
 
 
-                                    <c:otherwise>
-
-                                        Chưa thiết lập vị trí
-
-                                    </c:otherwise>
+                                    <c:choose>
 
 
-                                </c:choose>
+                                        <c:when test="${not empty plant.locationInHome}">
+
+                                            ${plant.locationInHome}
+
+                                        </c:when>
+
+
+                                        <c:otherwise>
+
+                                            Chưa thiết lập vị trí
+
+                                        </c:otherwise>
+
+
+                                    </c:choose>
+
+
+                                </div>
 
 
                             </div>
@@ -491,14 +521,16 @@
 
 
                             <%-- =====================================================
-                                 LỊCH TƯỚI
+                                 CARE INFO
                                  ===================================================== --%>
 
-                            <div class="care-box mt-auto">
+                            <div class="care-box">
 
 
                                 <c:choose>
 
+
+                                    <%-- Không có lịch --%>
 
                                     <c:when test="${schedule == null}">
 
@@ -523,6 +555,8 @@
 
 
 
+                                    <%-- Có lịch --%>
+
                                     <c:otherwise>
 
 
@@ -533,28 +567,113 @@
                                         </div>
 
 
-                                        <div class="care-value">
-
-                                            <i class="fa-solid fa-droplet text-primary me-1"></i>
+                                        <div class="care-main-row">
 
 
-                                            <c:choose>
+                                            <div class="care-value">
 
-                                                <c:when test="${schedule.nextDueDate != null}">
 
-                                                    <fmt:formatDate
-                                                        value="${schedule.nextDueDate}"
-                                                        pattern="dd/MM/yyyy" />
+                                                <i class="fa-solid
+                                                          fa-droplet
+                                                          text-primary
+                                                          me-1"></i>
 
-                                                </c:when>
 
-                                                <c:otherwise>
+                                                <c:choose>
 
-                                                    Chưa thiết lập
 
-                                                </c:otherwise>
+                                                    <c:when test="${schedule.nextDueDate != null}">
 
-                                            </c:choose>
+
+                                                        <fmt:formatDate
+                                                            value="${schedule.nextDueDate}"
+                                                            pattern="dd/MM/yyyy" />
+
+
+                                                    </c:when>
+
+
+                                                    <c:otherwise>
+
+                                                        Chưa thiết lập
+
+                                                    </c:otherwise>
+
+
+                                                </c:choose>
+
+
+                                            </div>
+
+
+
+                                            <%-- Upcoming --%>
+
+                                            <c:if test="${waterStatus eq 'UPCOMING'}">
+
+
+                                                <span class="water-days-left">
+
+
+                                                    <i class="fa-regular fa-clock me-1"></i>
+
+
+                                                    <c:choose>
+
+
+                                                        <c:when test="${daysUntilWater == 1}">
+
+                                                            Ngày mai
+
+                                                        </c:when>
+
+
+                                                        <c:otherwise>
+
+                                                            Còn ${daysUntilWater} ngày
+
+                                                        </c:otherwise>
+
+
+                                                    </c:choose>
+
+
+                                                </span>
+
+
+                                            </c:if>
+
+
+
+                                            <%-- Today --%>
+
+                                            <c:if test="${waterStatus eq 'TODAY'}">
+
+
+                                                <span class="water-status today-status">
+
+                                                    Hôm nay
+
+                                                </span>
+
+
+                                            </c:if>
+
+
+
+                                            <%-- Overdue --%>
+
+                                            <c:if test="${waterStatus eq 'OVERDUE'}">
+
+
+                                                <span class="water-status overdue-status">
+
+                                                    Quá hạn
+
+                                                </span>
+
+
+                                            </c:if>
 
 
                                         </div>
@@ -571,14 +690,17 @@
 
 
                             <%-- =====================================================
-                                 NÚT CHĂM SÓC
+                                 ACTION
                                  ===================================================== --%>
 
-                            <div class="mt-3">
+                            <div class="plant-action">
 
 
                                 <c:choose>
 
+
+
+                                    <%-- OVERDUE --%>
 
                                     <c:when test="${waterStatus eq 'OVERDUE'}">
 
@@ -589,30 +711,31 @@
                                             onclick="event.stopPropagation();">
 
 
-                                            <input type="hidden"
-                                                   name="scheduleId"
-                                                   value="${schedule.scheduleId}">
+                                            <input
+                                                type="hidden"
+                                                name="scheduleId"
+                                                value="${schedule.scheduleId}">
 
 
-                                            <input type="hidden"
-                                                   name="plantId"
-                                                   value="${plant.plantId}">
+                                            <input
+                                                type="hidden"
+                                                name="plantId"
+                                                value="${plant.plantId}">
 
 
-                                            <input type="hidden"
-                                                   name="actionType"
-                                                   value="WATER">
+                                            <input
+                                                type="hidden"
+                                                name="actionType"
+                                                value="WATER">
 
 
                                             <button
                                                 type="submit"
-                                                class="btn btn-danger btn-sm w-100 fw-semibold">
-
+                                                class="btn btn-danger w-100">
 
                                                 <i class="fa-solid fa-droplet me-1"></i>
 
                                                 Tưới ngay
-
 
                                             </button>
 
@@ -623,6 +746,8 @@
                                     </c:when>
 
 
+
+                                    <%-- TODAY --%>
 
                                     <c:when test="${waterStatus eq 'TODAY'}">
 
@@ -633,30 +758,31 @@
                                             onclick="event.stopPropagation();">
 
 
-                                            <input type="hidden"
-                                                   name="scheduleId"
-                                                   value="${schedule.scheduleId}">
+                                            <input
+                                                type="hidden"
+                                                name="scheduleId"
+                                                value="${schedule.scheduleId}">
 
 
-                                            <input type="hidden"
-                                                   name="plantId"
-                                                   value="${plant.plantId}">
+                                            <input
+                                                type="hidden"
+                                                name="plantId"
+                                                value="${plant.plantId}">
 
 
-                                            <input type="hidden"
-                                                   name="actionType"
-                                                   value="WATER">
+                                            <input
+                                                type="hidden"
+                                                name="actionType"
+                                                value="WATER">
 
 
                                             <button
                                                 type="submit"
-                                                class="btn btn-primary-app btn-sm w-100 fw-semibold">
-
+                                                class="btn btn-primary-app w-100">
 
                                                 <i class="fa-solid fa-droplet me-1"></i>
 
                                                 Tưới hôm nay
-
 
                                             </button>
 
@@ -665,48 +791,6 @@
 
 
                                     </c:when>
-
-
-
-                                    <c:when test="${waterStatus eq 'UPCOMING'}">
-
-
-                                        <button
-                                            type="button"
-                                            class="btn btn-light btn-sm w-100"
-                                            disabled>
-
-
-                                            <i class="fa-regular fa-clock me-1"></i>
-
-                                            Tưới sau ${daysUntilWater} ngày
-
-
-                                        </button>
-
-
-                                    </c:when>
-
-
-
-                                    <c:otherwise>
-
-
-                                        <button
-                                            type="button"
-                                            class="btn btn-light btn-sm w-100 text-muted"
-                                            disabled>
-
-
-                                            <i class="fa-regular fa-calendar-xmark me-1"></i>
-
-                                            Chưa có lịch tưới
-
-
-                                        </button>
-
-
-                                    </c:otherwise>
 
 
                                 </c:choose>
@@ -726,7 +810,7 @@
 
 
                 <%-- =====================================================
-                     MODAL CHI TIẾT CÂY
+                     MODAL
                      ===================================================== --%>
 
                 <div class="modal fade"
@@ -735,14 +819,16 @@
                      aria-hidden="true">
 
 
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-dialog
+                                modal-lg
+                                modal-dialog-centered">
 
 
                         <div class="modal-content">
 
 
 
-                            <%-- Modal header --%>
+                            <%-- HEADER --%>
 
                             <div class="modal-header">
 
@@ -779,7 +865,7 @@
 
 
 
-                            <%-- Modal body --%>
+                            <%-- BODY --%>
 
                             <div class="modal-body p-4">
 
@@ -788,7 +874,7 @@
 
 
 
-                                    <%-- Ảnh cây --%>
+                                    <%-- IMAGE --%>
 
                                     <div class="col-md-5">
 
@@ -808,10 +894,11 @@
 
                                             <c:otherwise>
 
-                                                <img
-                                                    src="https://via.placeholder.com/500x400?text=Plant"
-                                                    class="modal-plant-image"
-                                                    alt="Plant">
+                                                <div class="modal-image-placeholder">
+
+                                                    <i class="fa-solid fa-seedling"></i>
+
+                                                </div>
 
                                             </c:otherwise>
 
@@ -823,18 +910,16 @@
 
 
 
-                                    <%-- Chi tiết cây --%>
+                                    <%-- DETAILS --%>
 
                                     <div class="col-md-7">
 
 
                                         <div class="detail-section-title text-success">
 
-
                                             <i class="fa-solid fa-leaf me-1"></i>
 
                                             Thông tin cây
-
 
                                         </div>
 
@@ -898,9 +983,11 @@
 
                                                     <c:when test="${plant.plantedDate != null}">
 
+
                                                         <fmt:formatDate
                                                             value="${plant.plantedDate}"
                                                             pattern="dd/MM/yyyy" />
+
 
                                                     </c:when>
 
@@ -983,17 +1070,15 @@
 
 
 
-                                        <%-- =====================================================
-                                             CHI TIẾT LỊCH TƯỚI
-                                             ===================================================== --%>
+                                        <%-- WATER INFO --%>
 
-                                        <div class="detail-section-title text-primary mt-4">
-
+                                        <div class="detail-section-title
+                                                    text-primary
+                                                    mt-4">
 
                                             <i class="fa-solid fa-calendar-days me-1"></i>
 
                                             Lịch tưới
-
 
                                         </div>
 
@@ -1018,7 +1103,8 @@
 
                                                     <div class="detail-value">
 
-                                                        ${schedule.frequencyDays} ngày/lần
+                                                        ${schedule.frequencyDays}
+                                                        ngày/lần
 
                                                     </div>
 
@@ -1045,9 +1131,11 @@
 
                                                             <c:when test="${schedule.lastPerformed != null}">
 
+
                                                                 <fmt:formatDate
                                                                     value="${schedule.lastPerformed}"
                                                                     pattern="dd/MM/yyyy" />
+
 
                                                             </c:when>
 
@@ -1087,9 +1175,11 @@
 
                                                             <c:when test="${schedule.nextDueDate != null}">
 
+
                                                                 <fmt:formatDate
                                                                     value="${schedule.nextDueDate}"
                                                                     pattern="dd/MM/yyyy" />
+
 
                                                             </c:when>
 
@@ -1210,7 +1300,7 @@
 
 
 
-                            <%-- Modal footer --%>
+                            <%-- FOOTER --%>
 
                             <div class="modal-footer">
 
@@ -1219,11 +1309,9 @@
                                     href="${pageContext.request.contextPath}/Diary?plantId=${plant.plantId}"
                                     class="btn btn-outline-warning">
 
-
                                     <i class="fa-solid fa-chart-line me-1"></i>
 
                                     Nhật ký phát triển
-
 
                                 </a>
 
@@ -1233,9 +1321,7 @@
                                     class="btn btn-secondary"
                                     data-bs-dismiss="modal">
 
-
                                     Đóng
-
 
                                 </button>
 

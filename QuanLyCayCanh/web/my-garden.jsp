@@ -243,7 +243,7 @@
             <div class="menu">
                 <a href="my-garden" class="active">🌿 Vườn của tôi</a>
                 <a href="#">Thư viện mẫu</a>
-                <a href="#">Nhắc nhở tưới</a>
+                <a href="Care">Nhắc nhở tưới</a>
             </div>
             <!-- Khu vực User dạng Click Dropdown -->
             <div class="user-dropdown">
@@ -307,8 +307,8 @@
                                     </td>
                                     <td>${p.getPlantedDate()}</td>
                                     <td>
-                                        <a href="edit-plant?id=${p.getPlantID()}" class="btn-sm btn-edit">Sửa</a>
-                                        <a href="delete-plant?id=${p.getPlantID()}" class="btn-sm btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa cây này khỏi vườn?');">Xóa</a>
+                                        <a href="edit-plant?id=${p.getPlantId()}" class="btn-sm btn-edit">Sửa</a>
+                                        <a href="delete-plant?id=${p.getPlantId()}" class="btn-sm btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa cây này khỏi vườn?');">Xóa</a>
                                     </td>
                                 </tr>
                             </c:forEach>

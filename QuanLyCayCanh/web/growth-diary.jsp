@@ -8,247 +8,265 @@
 <!DOCTYPE html>
 <html lang="vi">
 
-    <head>
-        <meta charset="UTF-8">
+<head>
+    <meta charset="UTF-8">
 
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-        <title>Nhật Ký Phát Triển</title>
+    <title>Nhật Ký Phát Triển</title>
 
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-            rel="stylesheet">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet">
 
-        <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-            rel="stylesheet">
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        rel="stylesheet">
 
-        <style>
-            .diary-card {
-                border-radius: 12px;
-                overflow: hidden;
-            }
+    <link
+        href="${pageContext.request.contextPath}/css/growth-diary.css"
+        rel="stylesheet">
+</head>
 
-            .diary-image {
-                width: 100%;
-                height: 220px;
-                object-fit: cover;
-            }
 
-            .timeline-date {
-                font-size: 0.9rem;
-            }
-        </style>
-    </head>
+<body>
 
-    <body class="bg-light">
+<div class="container diary-page py-4 py-lg-5">
 
-        <div class="container py-4">
 
-            <div class="d-flex justify-content-between
-                 align-items-center
-                 mb-4">
+    <%-- =====================================================
+         HEADER
+         ===================================================== --%>
 
-                <div>
+    <div class="diary-header">
 
-                    <h2 class="text-success mb-1">
+        <div>
 
-                        <i class="fa-solid fa-chart-line me-2"></i>
+            <a href="${pageContext.request.contextPath}/Care"
+               class="back-link">
 
-                        Nhật Ký Phát Triển
+                <i class="fa-solid fa-arrow-left"></i>
+                Quay lại khu vườn
 
-                    </h2>
+            </a>
 
-                    <span class="text-muted">
-                        Plant ID: ${plantId}
-                    </span>
+            <h1>
+                <i class="fa-solid fa-chart-line"></i>
+                Nhật ký phát triển
+            </h1>
 
-                </div>
+            <p>
+                Theo dõi hành trình phát triển của cây theo thời gian.
+            </p>
 
-                <a href="${pageContext.request.contextPath}/Care"
-                   class="btn btn-outline-secondary">
+        </div>
 
-                    <i class="fa-solid fa-arrow-left me-1"></i>
 
-                    Quay lại
+        <button type="button"
+                class="btn btn-add-diary"
+                data-bs-toggle="modal"
+                data-bs-target="#addDiaryModal">
 
-                </a>
+            <i class="fa-solid fa-plus me-1"></i>
+            Thêm nhật ký
 
+        </button>
+
+    </div>
+
+
+
+    <%-- =====================================================
+         PLANT INFORMATION
+         ===================================================== --%>
+
+    <div class="plant-summary">
+
+        <div class="plant-summary-icon">
+            <i class="fa-solid fa-seedling"></i>
+        </div>
+
+        <div>
+
+            <span class="plant-summary-label">
+                Đang xem nhật ký của cây
+            </span>
+
+            <div class="plant-summary-value">
+                Plant #${plantId}
             </div>
 
+        </div>
 
-            <%-- Form thêm nhật ký --%>
-
-            <div class="card shadow-sm mb-4">
-
-                <div class="card-header bg-success text-white">
-
-                    <strong>
-                        <i class="fa-solid fa-plus me-1"></i>
-                        Thêm nhật ký mới
-                    </strong>
-
-                </div>
-
-                <div class="card-body">
-
-                    <form action="${pageContext.request.contextPath}/Diary"
-                          method="POST">
-
-                        <input type="hidden"
-                               name="plantId"
-                               value="${plantId}">
+    </div>
 
 
-                        <div class="row">
 
-                            <div class="col-md-4 mb-3">
+    <%-- =====================================================
+         EMPTY STATE
+         ===================================================== --%>
 
-                                <label class="form-label">
-                                    Chiều cao (cm)
-                                </label>
+    <c:if test="${empty diaries}">
 
-                                <input type="number"
-                                       step="0.1"
-                                       min="0"
-                                       name="heightCm"
-                                       class="form-control"
-                                       placeholder="VD: 35.5">
+        <div class="diary-empty">
 
-                            </div>
+            <div class="diary-empty-icon">
+                <i class="fa-solid fa-seedling"></i>
+            </div>
+
+            <h4>Chưa có nhật ký phát triển</h4>
+
+            <p>
+                Hãy ghi lại cột mốc đầu tiên để bắt đầu theo dõi
+                quá trình phát triển của cây.
+            </p>
+
+            <button type="button"
+                    class="btn btn-add-diary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addDiaryModal">
+
+                <i class="fa-solid fa-plus me-1"></i>
+                Thêm nhật ký đầu tiên
+
+            </button>
+
+        </div>
+
+    </c:if>
 
 
-                            <div class="col-md-8 mb-3">
 
-                                <label class="form-label">
-                                    URL ảnh
-                                </label>
+    <%-- =====================================================
+         TIMELINE
+         ===================================================== --%>
 
-                                <input type="text"
-                                       name="imageUrl"
-                                       class="form-control"
-                                       placeholder="VD: images/plant-growth-1.jpg">
+    <c:if test="${not empty diaries}">
 
-                            </div>
+        <div class="timeline-heading">
+
+            <div>
+                <h4>Hành trình phát triển</h4>
+
+                <p>
+                    Các cột mốc được ghi lại theo thời gian
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="growth-timeline">
+
+            <c:forEach var="diary"
+                       items="${diaries}">
+
+                <div class="timeline-item">
+
+
+                    <%-- TIMELINE DOT --%>
+
+                    <div class="timeline-marker">
+
+                        <div class="timeline-dot">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+
+                    </div>
+
+
+
+                    <%-- CONTENT --%>
+
+                    <div class="timeline-content">
+
+
+                        <%-- DATE --%>
+
+                        <div class="timeline-date">
+
+                            <i class="fa-regular fa-calendar me-1"></i>
+
+                            <fmt:formatDate
+                                value="${diary.logDate}"
+                                pattern="dd/MM/yyyy" />
+
+                            <span class="timeline-time">
+
+                                <fmt:formatDate
+                                    value="${diary.logDate}"
+                                    pattern="HH:mm" />
+
+                            </span>
 
                         </div>
 
 
-                        <div class="mb-3">
 
-                            <label class="form-label">
-                                Ghi chú
-                            </label>
+                        <%-- CARD --%>
 
-                            <textarea name="note"
-                                      class="form-control"
-                                      rows="3"
-                                      placeholder="VD: Cây mọc thêm chồi mới..."></textarea>
-
-                        </div>
+                        <div class="diary-entry">
 
 
-                        <button type="submit"
-                                class="btn btn-success">
+                            <%-- IMAGE --%>
 
-                            <i class="fa-solid fa-floppy-disk me-1"></i>
+                            <c:if test="${not empty diary.imageUrl}">
 
-                            Lưu nhật ký
+                                <div class="diary-image-wrapper">
 
-                        </button>
+                                    <img src="${diary.imageUrl}"
+                                         class="diary-image"
+                                         alt="Ảnh phát triển của cây">
 
-                    </form>
+                                </div>
 
-                </div>
-
-            </div>
-
-
-            <%-- Không có nhật ký --%>
-
-            <c:if test="${empty diaries}">
-
-                <div class="alert alert-secondary text-center">
-
-                    <i class="fa-solid fa-seedling me-1"></i>
-
-                    Cây này chưa có nhật ký phát triển.
-
-                </div>
-
-            </c:if>
+                            </c:if>
 
 
-            <%-- Danh sách diary --%>
 
-            <c:if test="${not empty diaries}">
+                            <%-- ENTRY CONTENT --%>
 
-                <div class="row g-4">
-
-                    <c:forEach var="diary"
-                               items="${diaries}">
-
-                        <div class="col-md-6 col-lg-4">
-
-                            <div class="card diary-card h-100 shadow-sm">
+                            <div class="diary-entry-body">
 
 
-                                <c:choose>
+                                <%-- HEIGHT --%>
 
-                                    <c:when test="${not empty diary.imageUrl}">
+                                <c:if test="${diary.heightCm != null}">
 
-                                        <img src="${diary.imageUrl}"
-                                             class="diary-image"
-                                             alt="Growth Image">
+                                    <div class="height-info">
 
-                                    </c:when>
+                                        <div class="height-icon">
+                                            <i class="fa-solid fa-ruler-vertical"></i>
+                                        </div>
 
-                                    <c:otherwise>
+                                        <div>
 
-                                        <img src="https://via.placeholder.com/400x220?text=Growth+Diary"
-                                             class="diary-image"
-                                             alt="Growth Image">
+                                            <span class="info-label">
+                                                Chiều cao
+                                            </span>
 
-                                    </c:otherwise>
+                                            <strong>
+                                                ${diary.heightCm} cm
+                                            </strong>
 
-                                </c:choose>
-
-
-                                <div class="card-body">
-
-                                    <div class="timeline-date
-                                         text-muted
-                                         mb-2">
-
-                                        <i class="fa-solid fa-calendar-days me-1"></i>
-
-                                        <fmt:formatDate
-                                            value="${diary.logDate}"
-                                            pattern="dd/MM/yyyy HH:mm" />
+                                        </div>
 
                                     </div>
 
-
-                                    <c:if test="${diary.heightCm != null}">
-
-                                        <p class="mb-2">
-
-                                            <strong>
-                                                <i class="fa-solid fa-ruler-vertical me-1"></i>
-                                                Chiều cao:
-                                            </strong>
-
-                                            ${diary.heightCm} cm
-
-                                        </p>
-
-                                    </c:if>
+                                </c:if>
 
 
-                                    <p class="mb-0">
 
-                                        <strong>Ghi chú:</strong>
+                                <%-- NOTE --%>
+
+                                <div class="diary-note">
+
+                                    <div class="note-label">
+                                        Ghi chú
+                                    </div>
+
+                                    <p>
 
                                         <c:choose>
 
@@ -257,48 +275,56 @@
                                             </c:when>
 
                                             <c:otherwise>
-                                                Không có ghi chú.
+                                                Không có ghi chú cho cột mốc này.
                                             </c:otherwise>
 
                                         </c:choose>
 
                                     </p>
-                                    <div class="mt-3 d-flex gap-2">
 
-                                        <a href="${pageContext.request.contextPath}/Diary?action=edit&diaryId=${diary.diaryId}"
-                                           class="btn btn-warning btn-sm">
+                                </div>
 
-                                            <i class="fa-solid fa-pen me-1"></i>
-                                            Sửa
 
-                                        </a>
-                                        <form action="${pageContext.request.contextPath}/Diary"
-                                              method="POST"
-                                              onsubmit="return confirm('Bạn có chắc muốn xóa nhật ký này?');">
 
-                                            <input type="hidden"
-                                                   name="action"
-                                                   value="delete">
+                                <%-- ACTIONS --%>
 
-                                            <input type="hidden"
-                                                   name="diaryId"
-                                                   value="${diary.diaryId}">
+                                <div class="diary-actions">
 
-                                            <input type="hidden"
-                                                   name="plantId"
-                                                   value="${diary.plantId}">
+                                    <a href="${pageContext.request.contextPath}/Diary?action=edit&diaryId=${diary.diaryId}"
+                                       class="btn btn-edit-diary">
 
-                                            <button type="submit"
-                                                    class="btn btn-danger btn-sm">
+                                        <i class="fa-solid fa-pen"></i>
+                                        Sửa
 
-                                                <i class="fa-solid fa-trash me-1"></i>
-                                                Xóa
+                                    </a>
 
-                                            </button>
 
-                                        </form>
+                                    <form action="${pageContext.request.contextPath}/Diary"
+                                          method="POST"
+                                          onsubmit="return confirm('Bạn có chắc muốn xóa nhật ký này?');">
 
-                                    </div>
+                                        <input type="hidden"
+                                               name="action"
+                                               value="delete">
+
+                                        <input type="hidden"
+                                               name="diaryId"
+                                               value="${diary.diaryId}">
+
+                                        <input type="hidden"
+                                               name="plantId"
+                                               value="${diary.plantId}">
+
+
+                                        <button type="submit"
+                                                class="btn btn-delete-diary">
+
+                                            <i class="fa-solid fa-trash"></i>
+                                            Xóa
+
+                                        </button>
+
+                                    </form>
 
                                 </div>
 
@@ -306,18 +332,172 @@
 
                         </div>
 
-                    </c:forEach>
+                    </div>
 
                 </div>
 
-            </c:if>
+            </c:forEach>
 
         </div>
 
+    </c:if>
 
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
-        </script>
+</div>
 
-    </body>
+
+
+<%-- =========================================================
+     ADD DIARY MODAL
+     ========================================================= --%>
+
+<div class="modal fade"
+     id="addDiaryModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content diary-modal">
+
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-seedling me-1"></i>
+                        Thêm cột mốc mới
+                    </h5>
+
+                    <span>
+                        Ghi lại sự phát triển của cây
+                    </span>
+
+                </div>
+
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+
+            <form action="${pageContext.request.contextPath}/Diary"
+                  method="POST">
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           name="plantId"
+                           value="${plantId}">
+
+
+                    <%-- HEIGHT --%>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            <i class="fa-solid fa-ruler-vertical me-1"></i>
+                            Chiều cao
+                        </label>
+
+
+                        <div class="input-group">
+
+                            <input type="number"
+                                   step="0.1"
+                                   min="0"
+                                   name="heightCm"
+                                   class="form-control"
+                                   placeholder="VD: 35.5">
+
+                            <span class="input-group-text">
+                                cm
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <%-- IMAGE --%>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            <i class="fa-regular fa-image me-1"></i>
+                            URL ảnh
+                        </label>
+
+                        <input type="text"
+                               name="imageUrl"
+                               class="form-control"
+                               placeholder="https://...">
+
+                        <div class="form-text">
+                            Thêm ảnh để dễ dàng so sánh sự phát triển
+                            của cây theo thời gian.
+                        </div>
+
+                    </div>
+
+
+
+                    <%-- NOTE --%>
+
+                    <div>
+
+                        <label class="form-label">
+                            <i class="fa-regular fa-note-sticky me-1"></i>
+                            Ghi chú
+                        </label>
+
+                        <textarea name="note"
+                                  class="form-control"
+                                  rows="4"
+                                  placeholder="VD: Cây mọc thêm chồi mới, lá xanh hơn..."></textarea>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        Hủy
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-add-diary">
+
+                        <i class="fa-solid fa-floppy-disk me-1"></i>
+                        Lưu nhật ký
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
 </html>
