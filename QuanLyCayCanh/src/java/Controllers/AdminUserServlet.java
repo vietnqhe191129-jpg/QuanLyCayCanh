@@ -30,15 +30,13 @@ public class AdminUserServlet extends HttpServlet {
         }
 
         UserDAO userDAO = new UserDAO();
-
-        // Handle Action
         String action = request.getParameter("action");
         if ("toggle".equals(action)) {
             try {
                 int id = Integer.parseInt(request.getParameter("id"));
                 boolean status = Boolean.parseBoolean(request.getParameter("status"));
                 
-                // Prevent admin from blocking themselves
+                // admin không khóa đưoc chính mình
                 if (id == loggedUser.getUserID()) {
                     request.setAttribute("error", "Bạn không thể tự khoá tài khoản của chính mình!");
                 } else {
@@ -49,7 +47,6 @@ public class AdminUserServlet extends HttpServlet {
             }
         }
 
-        // Load users list
         List<User> list = userDAO.getAllUsers();
         request.setAttribute("usersList", list);
         request.getRequestDispatcher("/admin-users.jsp").forward(request, response);
