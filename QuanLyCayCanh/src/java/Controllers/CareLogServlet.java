@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author vktuy
  */
-public class WaterServlet extends HttpServlet {
+public class CareLogServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -35,10 +35,10 @@ public class WaterServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet WaterServlet</title>");  
+            out.println("<title>Servlet CareLogServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet WaterServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet CareLogServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -68,30 +68,64 @@ public class WaterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+         request.setCharacterEncoding("UTF-8");
+
         try {
-            int plantId =
-                    Integer.parseInt(request.getParameter("plantId"));
 
             int scheduleId =
-                    Integer.parseInt(request.getParameter("scheduleId"));
+                    Integer.parseInt(
+                            request.getParameter("scheduleId")
+                    );
+
+            int plantId =
+                    Integer.parseInt(
+                            request.getParameter("plantId")
+                    );
+
+            String actionType =
+                    request.getParameter("actionType");
+
+            if (actionType == null
+                    || actionType.trim().isEmpty()) {
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/TodayTask"
+                );
+
+                return;
+            }
 
             CareLogDAO logDAO = new CareLogDAO();
-            CareScheduleDAO scheduleDAO = new CareScheduleDAO();
+            CareScheduleDAO scheduleDAO =
+                    new CareScheduleDAO();
 
-            // Lưu lịch sử tưới
-            logDAO.insert(plantId, "WATER");
+            /*
+             * 1. Lưu lịch sử chăm sóc
+             */
+            logDAO.insert(
+                    plantId,
+                    actionType
+            );
 
-            // Cập nhật lần tưới và ngày tiếp theo
+            /*
+             * 2. Gia hạn lịch tiếp theo
+             */
             scheduleDAO.markAsDone(scheduleId);
 
-            // Quay về trang Care
+            /*
+             * 3. Quay lại checklist
+             */
             response.sendRedirect(
-                    request.getContextPath() + "/Care"
+                    request.getContextPath()
+                    + "/TodayTask"
             );
 
         } catch (NumberFormatException e) {
+
             response.sendRedirect(
-                    request.getContextPath() + "/Care"
+                    request.getContextPath()
+                    + "/TodayTask"
             );
         }
     }

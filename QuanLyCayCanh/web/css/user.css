@@ -1,0 +1,277 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : 25 thg 8, 2026, 14:35:52
+    Author     : vktuy
+*/
+:root {
+    --primary: #2f7d4a;
+    --primary-dark: #24663b;
+    --primary-soft: #eaf5ee;
+
+    --background: #f6f8f6;
+    --surface: #ffffff;
+
+    --text-main: #1f2a24;
+    --text-muted: #748078;
+
+    --border: #e4e9e5;
+
+    --danger: #d9534f;
+    --danger-soft: #fdeaea;
+
+    --warning: #d79c2f;
+    --warning-soft: #fff5dd;
+
+    --info-soft: #edf5ff;
+
+    --radius-lg: 18px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text-main);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.page-shell {
+    max-width: 1280px;
+}
+
+.page-heading h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.page-heading p {
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+
+.btn-primary-app {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.btn-primary-app:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: white;
+}
+
+.summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    height: 100%;
+}
+
+.summary-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+}
+
+.summary-icon.green {
+    background: var(--primary-soft);
+    color: var(--primary);
+}
+
+.summary-icon.blue {
+    background: var(--info-soft);
+    color: #2976c7;
+}
+
+.summary-icon.red {
+    background: var(--danger-soft);
+    color: var(--danger);
+}
+
+.summary-value {
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-top: 14px;
+}
+
+.summary-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 6px;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.plant-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.plant-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(31, 42, 36, 0.08);
+}
+
+.plant-image-wrapper {
+    position: relative;
+}
+
+.plant-img {
+    height: 210px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.health-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.health-healthy {
+    background: rgba(47, 125, 74, 0.92);
+    color: white;
+}
+
+.health-warning {
+    background: rgba(235, 173, 50, 0.95);
+    color: #212529;
+}
+
+.health-sick {
+    background: rgba(217, 83, 79, 0.95);
+    color: white;
+}
+
+.plant-name {
+    font-size: 1.08rem;
+    font-weight: 700;
+}
+
+.plant-location {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.care-box {
+    background: #fafbfa;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+}
+
+.care-label {
+    color: var(--text-muted);
+    font-size: 0.77rem;
+    margin-bottom: 3px;
+}
+
+.care-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.empty-state {
+    background: var(--surface);
+    border: 1px dashed #cfd7d1;
+    border-radius: var(--radius-lg);
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    color: #9ba69e;
+    margin-bottom: 16px;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-plant-image {
+    width: 100%;
+    max-height: 310px;
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+.detail-section-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 9px 0;
+    border-bottom: 1px solid #f0f2f0;
+}
+
+.detail-row:last-child {
+    border-bottom: 0;
+}
+
+.detail-label {
+    color: var(--text-muted);
+}
+
+.detail-value {
+    text-align: right;
+    font-weight: 600;
+}
+
+.top-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+@media (max-width: 767px) {
+    .page-heading h1 {
+        font-size: 1.55rem;
+    }
+
+    .plant-img {
+        height: 230px;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .detail-value {
+        text-align: left;
+    }
+}

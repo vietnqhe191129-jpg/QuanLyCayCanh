@@ -42,38 +42,42 @@ public class CareScheduleDAO extends DBContext {
     }
 
     public List<CareSchedule> getTodayTasks(int userId) {
-        List<CareSchedule> list = new ArrayList<>();
+    List<CareSchedule> list = new ArrayList<>();
 
-        String sql = """
-            SELECT cs.*
-            FROM CareSchedules cs
-            JOIN UserPlants up ON cs.PlantID = up.PlantID
-            WHERE up.UserID = ?
-            AND CAST(cs.NextDueDate AS DATE) = CAST(GETDATE() AS DATE)
-        """;
+    String sql = """
+        SELECT cs.*
+        FROM CareSchedules cs
+        JOIN UserPlants up ON cs.PlantID = up.PlantID
+        WHERE up.UserID = ?
+          AND CAST(cs.NextDueDate AS DATE) <= CAST(GETDATE() AS DATE)
+        ORDER BY cs.NextDueDate ASC
+    """;
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, userId);
 
-            while (rs.next()) {
-                CareSchedule cs = new CareSchedule();
-                cs.setScheduleId(rs.getInt("ScheduleID"));
-                cs.setPlantId(rs.getInt("PlantID"));
-                cs.setActionType(rs.getString("ActionType"));
-                cs.setFrequencyDays(rs.getInt("FrequencyDays"));
-                cs.setLastPerformed(rs.getTimestamp("LastPerformed"));
-                cs.setNextDueDate(rs.getTimestamp("NextDueDate"));
+        ResultSet rs = ps.executeQuery();
 
-                list.add(cs);
-            }
+        while (rs.next()) {
+            CareSchedule cs = new CareSchedule();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            cs.setScheduleId(rs.getInt("ScheduleID"));
+            cs.setPlantId(rs.getInt("PlantID"));
+            cs.setActionType(rs.getString("ActionType"));
+            cs.setFrequencyDays(rs.getInt("FrequencyDays"));
+            cs.setLastPerformed(rs.getTimestamp("LastPerformed"));
+            cs.setNextDueDate(rs.getTimestamp("NextDueDate"));
+
+            list.add(cs);
         }
-        return list;
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return list;
+}
 
     public void insert(CareSchedule cs) {
         String sql = """

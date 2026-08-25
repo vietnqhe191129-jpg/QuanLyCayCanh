@@ -181,4 +181,50 @@ public class UserPlantDAO extends DBContext {
 
         return list;
     }
+    
+    
+    public UserPlant getById(int plantId) {
+
+    String sql = """
+        SELECT *
+        FROM UserPlants
+        WHERE PlantID = ?
+    """;
+
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, plantId);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            UserPlant plant = new UserPlant();
+
+            plant.setPlantId(rs.getInt("PlantID"));
+            plant.setUserId(rs.getInt("UserID"));
+
+            int categoryId = rs.getInt("CategoryID");
+
+            if (rs.wasNull()) {
+                plant.setCategoryId(null);
+            } else {
+                plant.setCategoryId(categoryId);
+            }
+
+            plant.setCustomName(rs.getString("CustomName"));
+            plant.setLocationInHome(rs.getString("LocationInHome"));
+            plant.setPlantedDate(rs.getDate("PlantedDate"));
+            plant.setHealthStatus(rs.getString("HealthStatus"));
+            plant.setImageUrl(rs.getString("ImageUrl"));
+            plant.setNote(rs.getString("Note"));
+
+            return plant;
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
 }

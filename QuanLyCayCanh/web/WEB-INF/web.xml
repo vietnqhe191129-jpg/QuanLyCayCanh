@@ -8,6 +8,18 @@
         <servlet-name>WaterServlet</servlet-name>
         <servlet-class>Controllers.WaterServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DiaryServlet</servlet-name>
+        <servlet-class>Controllers.DiaryServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TodatTaskServlet</servlet-name>
+        <servlet-class>Controllers.TodayTaskServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CareLogServlet</servlet-name>
+        <servlet-class>Controllers.CareLogServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CareServlet</servlet-name>
         <url-pattern>/Care</url-pattern>
@@ -16,7 +28,6 @@
         <servlet-name>WaterServlet</servlet-name>
         <url-pattern>/Water</url-pattern>
     </servlet-mapping>
-    
     <servlet>
         <servlet-name>HomeGardenServlet</servlet-name>
         <servlet-class>Controllers.HomeGardenServlet</servlet-class>
@@ -64,5 +75,17 @@
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
         <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DiaryServlet</servlet-name>
+        <url-pattern>/Diary</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TodatTaskServlet</servlet-name>
+        <url-pattern>/TodayTask</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CareLogServlet</servlet-name>
+        <url-pattern>/CareLog</url-pattern>
     </servlet-mapping>
 </web-app>

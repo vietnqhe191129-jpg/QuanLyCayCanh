@@ -4,19 +4,20 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
-<jsp:useBean id="now" class="java.util.Date" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <!DOCTYPE html>
+
 <html lang="vi">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Quản Lý Chăm Sóc Cây Cảnh</title>
+    <title>Chăm Sóc Cây</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -26,95 +27,110 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         rel="stylesheet">
 
-    <style>
-        .plant-card {
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .plant-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .plant-img {
-            height: 200px;
-            object-fit: cover;
-            width: 100%;
-        }
-
-        .badge-healthy {
-            background-color: #198754;
-        }
-
-        .badge-warning-custom {
-            background-color: #ffc107;
-            color: black;
-        }
-
-        .badge-sick {
-            background-color: #dc3545;
-        }
-
-        .empty-box {
-            min-height: 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-    </style>
+    <link
+        href="${pageContext.request.contextPath}/css/user.css"
+        rel="stylesheet">
 
 </head>
 
-<body class="bg-light">
 
-<div class="container py-4">
+<body>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container page-shell py-4 py-lg-5">
 
-        <h2 class="text-success m-0">
-            <i class="fa-solid fa-seedling me-2"></i>
-            Quản Lý Cây Cảnh
-        </h2>
 
-        <a href="${pageContext.request.contextPath}/add-plant"
-           class="btn btn-success">
+    <%-- =====================================================
+         HEADER
+         ===================================================== --%>
 
-            <i class="fa-solid fa-plus me-1"></i>
-            Thêm cây mới
+    <div class="d-flex
+                flex-column
+                flex-md-row
+                justify-content-between
+                align-items-md-center
+                gap-3
+                mb-4">
 
-        </a>
+
+        <div class="page-heading">
+
+            <h1>
+
+                <i class="fa-solid fa-seedling text-success me-2"></i>
+
+                Khu vườn của tôi
+
+            </h1>
+
+
+            <p>
+
+                Theo dõi tình trạng và lịch chăm sóc cây cảnh của bạn.
+
+            </p>
+
+        </div>
+
+
+        <div class="top-actions">
+
+
+            <a href="${pageContext.request.contextPath}/TodayTask"
+               class="btn btn-outline-success">
+
+                <i class="fa-solid fa-list-check me-1"></i>
+
+                Việc hôm nay
+
+            </a>
+
+
+            <a href="${pageContext.request.contextPath}/add-plant"
+               class="btn btn-primary-app">
+
+                <i class="fa-solid fa-plus me-1"></i>
+
+                Thêm cây
+
+            </a>
+
+
+        </div>
 
     </div>
 
 
-    <%-- Không có cây --%>
 
-    <c:if test="${empty plants}">
+    <%-- =====================================================
+         SUMMARY
+         ===================================================== --%>
 
-        <div class="card shadow-sm">
+    <div class="row g-3 mb-5">
 
-            <div class="card-body empty-box text-center">
 
-                <div>
+        <%-- Tổng số cây --%>
 
-                    <i class="fa-solid fa-seedling fa-4x text-secondary mb-3"></i>
+        <div class="col-md-4">
 
-                    <h4>Bạn chưa có cây nào</h4>
+            <div class="summary-card">
 
-                    <p class="text-muted">
-                        Hãy thêm cây đầu tiên vào khu vườn của bạn.
-                    </p>
+                <div class="summary-icon green">
 
-                    <a href="${pageContext.request.contextPath}/add-plant"
-                       class="btn btn-success">
+                    <i class="fa-solid fa-seedling"></i>
 
-                        <i class="fa-solid fa-plus me-1"></i>
-                        Thêm cây
+                </div>
 
-                    </a>
+
+                <div class="summary-value">
+
+                    ${fn:length(plants)}
+
+                </div>
+
+
+                <div class="summary-label">
+
+                    Tổng số cây
 
                 </div>
 
@@ -122,216 +138,596 @@
 
         </div>
 
+
+
+        <%-- Cây có lịch tưới --%>
+
+        <div class="col-md-4">
+
+            <div class="summary-card">
+
+                <div class="summary-icon blue">
+
+                    <i class="fa-solid fa-droplet"></i>
+
+                </div>
+
+
+                <div class="summary-value">
+
+                    <c:set var="needCareCount" value="0" />
+
+
+                    <c:forEach var="summaryPlant"
+                               items="${plants}">
+
+                        <c:set var="summarySchedule"
+                               value="${scheduleMap[summaryPlant.plantId]}" />
+
+
+                        <c:if test="${summarySchedule != null}">
+
+                            <c:set var="needCareCount"
+                                   value="${needCareCount + 1}" />
+
+                        </c:if>
+
+                    </c:forEach>
+
+
+                    ${needCareCount}
+
+                </div>
+
+
+                <div class="summary-label">
+
+                    Cây có lịch tưới
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <%-- Cây cần chú ý --%>
+
+        <div class="col-md-4">
+
+            <div class="summary-card">
+
+                <div class="summary-icon red">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                </div>
+
+
+                <div class="summary-value">
+
+                    <c:set var="warningCount" value="0" />
+
+
+                    <c:forEach var="summaryPlant"
+                               items="${plants}">
+
+
+                        <c:if test="${summaryPlant.healthStatus ne 'Khỏe mạnh'}">
+
+                            <c:set var="warningCount"
+                                   value="${warningCount + 1}" />
+
+                        </c:if>
+
+
+                    </c:forEach>
+
+
+                    ${warningCount}
+
+                </div>
+
+
+                <div class="summary-label">
+
+                    Cây cần chú ý
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <%-- =====================================================
+         SECTION HEADER
+         ===================================================== --%>
+
+    <div class="d-flex
+                justify-content-between
+                align-items-center
+                mb-3">
+
+
+        <div>
+
+            <div class="section-title">
+
+                Cây của tôi
+
+            </div>
+
+
+            <div class="text-muted small">
+
+                Chọn một cây để xem chi tiết.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <%-- =====================================================
+         EMPTY STATE
+         ===================================================== --%>
+
+    <c:if test="${empty plants}">
+
+
+        <div class="empty-state">
+
+
+            <div class="empty-state-icon">
+
+                <i class="fa-solid fa-seedling"></i>
+
+            </div>
+
+
+            <h4>
+
+                Khu vườn đang trống
+
+            </h4>
+
+
+            <p class="text-muted mb-4">
+
+                Thêm cây đầu tiên để bắt đầu theo dõi và chăm sóc.
+
+            </p>
+
+
+            <a href="${pageContext.request.contextPath}/add-plant"
+               class="btn btn-primary-app">
+
+                <i class="fa-solid fa-plus me-1"></i>
+
+                Thêm cây đầu tiên
+
+            </a>
+
+
+        </div>
+
     </c:if>
 
 
-    <%-- Danh sách cây --%>
+
+    <%-- =====================================================
+         PLANT GRID
+         ===================================================== --%>
 
     <c:if test="${not empty plants}">
 
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
 
-            <c:forEach var="plant" items="${plants}">
+        <div class="row g-4">
 
-                <%-- Lấy lịch tưới WATER của cây --%>
+
+            <c:forEach var="plant"
+                       items="${plants}">
+
+
+                <%-- Schedule hiện tại của cây --%>
 
                 <c:set var="schedule"
                        value="${scheduleMap[plant.plantId]}" />
 
 
-                <div class="col">
+                <%-- Trạng thái WATER của cây --%>
 
-                    <div class="card h-100 plant-card shadow-sm"
+                <c:set var="waterStatus"
+                       value="${waterStatusMap[plant.plantId]}" />
+
+
+                <%-- Số ngày còn lại trước khi tưới --%>
+
+                <c:set var="daysUntilWater"
+                       value="${daysUntilWaterMap[plant.plantId]}" />
+
+
+
+                <div class="col-sm-6 col-lg-4 col-xl-3">
+
+
+                    <div class="plant-card h-100"
                          data-bs-toggle="modal"
                          data-bs-target="#plantModal${plant.plantId}">
 
 
-                        <%-- Ảnh cây --%>
+                        <%-- =====================================================
+                             ẢNH + HEALTH STATUS
+                             ===================================================== --%>
 
-                        <c:choose>
+                        <div class="plant-image-wrapper">
 
-                            <c:when test="${not empty plant.imageUrl}">
 
-                                <img
-                                    src="${plant.imageUrl}"
-                                    class="card-img-top plant-img"
-                                    alt="${plant.customName}">
+                            <c:choose>
 
-                            </c:when>
 
-                            <c:otherwise>
+                                <c:when test="${not empty plant.imageUrl}">
 
-                                <img
-                                    src="https://via.placeholder.com/300x200?text=Plant+Image"
-                                    class="card-img-top plant-img"
-                                    alt="Plant Image">
+                                    <img
+                                        src="${plant.imageUrl}"
+                                        class="plant-img"
+                                        alt="${plant.customName}">
 
-                            </c:otherwise>
+                                </c:when>
 
-                        </c:choose>
 
+                                <c:otherwise>
 
-                        <div class="card-body d-flex flex-column">
+                                    <img
+                                        src="https://via.placeholder.com/500x350?text=Plant"
+                                        class="plant-img"
+                                        alt="Plant Image">
 
-                            <h5 class="card-title fw-bold text-dark">
-                                ${plant.customName}
-                            </h5>
+                                </c:otherwise>
 
 
-                            <p class="card-text text-muted small mb-2">
+                            </c:choose>
 
-                                <i class="fa-solid fa-location-dot me-1"></i>
 
-                                <c:choose>
 
-                                    <c:when test="${not empty plant.locationInHome}">
-                                        ${plant.locationInHome}
-                                    </c:when>
+                            <c:choose>
 
-                                    <c:otherwise>
-                                        Chưa thiết lập vị trí
-                                    </c:otherwise>
 
-                                </c:choose>
+                                <c:when test="${plant.healthStatus eq 'Khỏe mạnh'}">
 
-                            </p>
+                                    <span class="health-badge health-healthy">
 
+                                        <i class="fa-solid fa-circle-check me-1"></i>
 
-                            <%-- Health Status --%>
+                                        Khỏe mạnh
 
-                            <div class="mb-3">
+                                    </span>
 
-                                <c:choose>
+                                </c:when>
 
-                                    <c:when test="${plant.healthStatus == 'Khỏe mạnh'}">
 
-                                        <span class="badge badge-healthy px-2 py-1">
+                                <c:when test="${plant.healthStatus eq 'Cần chăm sóc'}">
 
-                                            <i class="fa-solid fa-heart me-1"></i>
+                                    <span class="health-badge health-warning">
 
-                                            Khỏe mạnh
+                                        <i class="fa-solid fa-triangle-exclamation me-1"></i>
 
-                                        </span>
+                                        Cần chăm sóc
 
-                                    </c:when>
+                                    </span>
 
-                                    <c:when test="${plant.healthStatus == 'Cần chăm sóc'}">
+                                </c:when>
 
-                                        <span class="badge badge-warning-custom px-2 py-1">
 
-                                            <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                                <c:otherwise>
 
-                                            Cần chăm sóc
+                                    <span class="health-badge health-sick">
 
-                                        </span>
+                                        <i class="fa-solid fa-circle-exclamation me-1"></i>
 
-                                    </c:when>
+                                        ${plant.healthStatus}
 
-                                    <c:otherwise>
+                                    </span>
 
-                                        <span class="badge badge-sick px-2 py-1">
+                                </c:otherwise>
 
-                                            <i class="fa-solid fa-circle-exclamation me-1"></i>
 
-                                            ${plant.healthStatus}
+                            </c:choose>
 
-                                        </span>
-
-                                    </c:otherwise>
-
-                                </c:choose>
-
-                            </div>
-
-
-                            <%-- Lịch chăm sóc --%>
-
-                            <div class="mt-auto pt-2 border-top">
-
-                                <c:choose>
-
-                                    <c:when test="${schedule == null}">
-
-                                        <div class="text-center">
-
-                                            <span class="text-secondary small">
-
-                                                <i class="fa-solid fa-calendar-xmark me-1"></i>
-
-                                                Chưa có lịch tưới
-
-                                            </span>
-
-                                        </div>
-
-                                    </c:when>
-
-
-                                    <c:when test="${schedule.nextDueDate != null
-                                                    && schedule.nextDueDate.time <= now.time}">
-
-                                        <form
-                                            action="${pageContext.request.contextPath}/Water"
-                                            method="POST"
-                                            onclick="event.stopPropagation();">
-
-                                            <input
-                                                type="hidden"
-                                                name="plantId"
-                                                value="${plant.plantId}">
-
-                                            <input
-                                                type="hidden"
-                                                name="scheduleId"
-                                                value="${schedule.scheduleId}">
-
-                                            <button
-                                                type="submit"
-                                                class="btn btn-primary btn-sm w-100 fw-bold">
-
-                                                <i class="fa-solid fa-droplet me-1"></i>
-
-                                                Tưới nước ngay
-
-                                            </button>
-
-                                        </form>
-
-                                    </c:when>
-
-
-                                    <c:otherwise>
-
-                                        <div class="text-secondary small fw-semibold text-center">
-
-                                            <i class="fa-solid fa-clock me-1"></i>
-
-                                            Tưới tiếp vào:
-
-                                            <span class="badge bg-info text-dark">
-
-                                                <fmt:formatDate
-                                                    value="${schedule.nextDueDate}"
-                                                    pattern="dd/MM/yyyy" />
-
-                                            </span>
-
-                                        </div>
-
-                                    </c:otherwise>
-
-                                </c:choose>
-
-                            </div>
 
                         </div>
 
+
+
+                        <%-- =====================================================
+                             NỘI DUNG CARD
+                             ===================================================== --%>
+
+                        <div class="p-3 d-flex flex-column h-100">
+
+
+                            <div class="plant-name mb-1">
+
+                                ${plant.customName}
+
+                            </div>
+
+
+
+                            <div class="plant-location mb-3">
+
+                                <i class="fa-solid fa-location-dot me-1"></i>
+
+
+                                <c:choose>
+
+
+                                    <c:when test="${not empty plant.locationInHome}">
+
+                                        ${plant.locationInHome}
+
+                                    </c:when>
+
+
+                                    <c:otherwise>
+
+                                        Chưa thiết lập vị trí
+
+                                    </c:otherwise>
+
+
+                                </c:choose>
+
+
+                            </div>
+
+
+
+                            <%-- =====================================================
+                                 LỊCH TƯỚI
+                                 ===================================================== --%>
+
+                            <div class="care-box mt-auto">
+
+
+                                <c:choose>
+
+
+                                    <c:when test="${schedule == null}">
+
+
+                                        <div class="care-label">
+
+                                            Lịch tưới
+
+                                        </div>
+
+
+                                        <div class="care-value text-muted">
+
+                                            <i class="fa-regular fa-calendar-xmark me-1"></i>
+
+                                            Chưa thiết lập
+
+                                        </div>
+
+
+                                    </c:when>
+
+
+
+                                    <c:otherwise>
+
+
+                                        <div class="care-label">
+
+                                            Lịch tưới tiếp theo
+
+                                        </div>
+
+
+                                        <div class="care-value">
+
+                                            <i class="fa-solid fa-droplet text-primary me-1"></i>
+
+
+                                            <c:choose>
+
+                                                <c:when test="${schedule.nextDueDate != null}">
+
+                                                    <fmt:formatDate
+                                                        value="${schedule.nextDueDate}"
+                                                        pattern="dd/MM/yyyy" />
+
+                                                </c:when>
+
+                                                <c:otherwise>
+
+                                                    Chưa thiết lập
+
+                                                </c:otherwise>
+
+                                            </c:choose>
+
+
+                                        </div>
+
+
+                                    </c:otherwise>
+
+
+                                </c:choose>
+
+
+                            </div>
+
+
+
+                            <%-- =====================================================
+                                 NÚT CHĂM SÓC
+                                 ===================================================== --%>
+
+                            <div class="mt-3">
+
+
+                                <c:choose>
+
+
+                                    <c:when test="${waterStatus eq 'OVERDUE'}">
+
+
+                                        <form
+                                            action="${pageContext.request.contextPath}/CareLog"
+                                            method="POST"
+                                            onclick="event.stopPropagation();">
+
+
+                                            <input type="hidden"
+                                                   name="scheduleId"
+                                                   value="${schedule.scheduleId}">
+
+
+                                            <input type="hidden"
+                                                   name="plantId"
+                                                   value="${plant.plantId}">
+
+
+                                            <input type="hidden"
+                                                   name="actionType"
+                                                   value="WATER">
+
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger btn-sm w-100 fw-semibold">
+
+
+                                                <i class="fa-solid fa-droplet me-1"></i>
+
+                                                Tưới ngay
+
+
+                                            </button>
+
+
+                                        </form>
+
+
+                                    </c:when>
+
+
+
+                                    <c:when test="${waterStatus eq 'TODAY'}">
+
+
+                                        <form
+                                            action="${pageContext.request.contextPath}/CareLog"
+                                            method="POST"
+                                            onclick="event.stopPropagation();">
+
+
+                                            <input type="hidden"
+                                                   name="scheduleId"
+                                                   value="${schedule.scheduleId}">
+
+
+                                            <input type="hidden"
+                                                   name="plantId"
+                                                   value="${plant.plantId}">
+
+
+                                            <input type="hidden"
+                                                   name="actionType"
+                                                   value="WATER">
+
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-primary-app btn-sm w-100 fw-semibold">
+
+
+                                                <i class="fa-solid fa-droplet me-1"></i>
+
+                                                Tưới hôm nay
+
+
+                                            </button>
+
+
+                                        </form>
+
+
+                                    </c:when>
+
+
+
+                                    <c:when test="${waterStatus eq 'UPCOMING'}">
+
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-light btn-sm w-100"
+                                            disabled>
+
+
+                                            <i class="fa-regular fa-clock me-1"></i>
+
+                                            Tưới sau ${daysUntilWater} ngày
+
+
+                                        </button>
+
+
+                                    </c:when>
+
+
+
+                                    <c:otherwise>
+
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-light btn-sm w-100 text-muted"
+                                            disabled>
+
+
+                                            <i class="fa-regular fa-calendar-xmark me-1"></i>
+
+                                            Chưa có lịch tưới
+
+
+                                        </button>
+
+
+                                    </c:otherwise>
+
+
+                                </c:choose>
+
+
+                            </div>
+
+
+                        </div>
+
+
                     </div>
+
 
                 </div>
 
 
-                <%-- Modal chi tiết từng cây --%>
+
+                <%-- =====================================================
+                     MODAL CHI TIẾT CÂY
+                     ===================================================== --%>
 
                 <div class="modal fade"
                      id="plantModal${plant.plantId}"
@@ -341,104 +737,164 @@
 
                     <div class="modal-dialog modal-lg modal-dialog-centered">
 
+
                         <div class="modal-content">
 
 
-                            <div class="modal-header bg-success text-white">
 
-                                <h5 class="modal-title">
+                            <%-- Modal header --%>
 
-                                    <i class="fa-solid fa-circle-info me-2"></i>
+                            <div class="modal-header">
 
-                                    Chi Tiết Cây
 
-                                </h5>
+                                <div>
+
+
+                                    <h5 class="modal-title fw-bold mb-1">
+
+                                        ${plant.customName}
+
+                                    </h5>
+
+
+                                    <span class="text-muted small">
+
+                                        Chi tiết và chăm sóc cây
+
+                                    </span>
+
+
+                                </div>
+
 
                                 <button
                                     type="button"
-                                    class="btn-close btn-close-white"
+                                    class="btn-close"
                                     data-bs-dismiss="modal"
                                     aria-label="Close">
                                 </button>
 
+
                             </div>
 
 
-                            <div class="modal-body">
 
-                                <div class="row">
+                            <%-- Modal body --%>
+
+                            <div class="modal-body p-4">
 
 
-                                    <div class="col-md-5 text-center mb-3">
+                                <div class="row g-4">
+
+
+
+                                    <%-- Ảnh cây --%>
+
+                                    <div class="col-md-5">
+
 
                                         <c:choose>
+
 
                                             <c:when test="${not empty plant.imageUrl}">
 
                                                 <img
                                                     src="${plant.imageUrl}"
-                                                    class="img-fluid rounded shadow-sm mb-3"
+                                                    class="modal-plant-image"
                                                     alt="${plant.customName}">
 
                                             </c:when>
 
+
                                             <c:otherwise>
 
                                                 <img
-                                                    src="https://via.placeholder.com/300x200?text=Plant+Detail"
-                                                    class="img-fluid rounded shadow-sm mb-3"
-                                                    alt="Plant Image">
+                                                    src="https://via.placeholder.com/500x400?text=Plant"
+                                                    class="modal-plant-image"
+                                                    alt="Plant">
 
                                             </c:otherwise>
+
 
                                         </c:choose>
 
 
-                                        <h4 class="fw-bold">
-                                            ${plant.customName}
-                                        </h4>
-
                                     </div>
 
+
+
+                                    <%-- Chi tiết cây --%>
 
                                     <div class="col-md-7">
 
 
-                                        <h6 class="fw-bold text-success border-bottom pb-2">
+                                        <div class="detail-section-title text-success">
+
 
                                             <i class="fa-solid fa-leaf me-1"></i>
 
-                                            Thông Tin Chung
-
-                                        </h6>
+                                            Thông tin cây
 
 
-                                        <ul class="list-unstyled small mb-4">
+                                        </div>
 
-                                            <li class="mb-2">
 
-                                                <strong>Vị trí:</strong>
+
+                                        <div class="detail-row">
+
+
+                                            <div class="detail-label">
+
+                                                Vị trí
+
+                                            </div>
+
+
+                                            <div class="detail-value">
+
 
                                                 <c:choose>
 
+
                                                     <c:when test="${not empty plant.locationInHome}">
+
                                                         ${plant.locationInHome}
+
                                                     </c:when>
 
+
                                                     <c:otherwise>
+
                                                         Chưa cập nhật
+
                                                     </c:otherwise>
+
 
                                                 </c:choose>
 
-                                            </li>
+
+                                            </div>
 
 
-                                            <li class="mb-2">
+                                        </div>
 
-                                                <strong>Ngày trồng:</strong>
+
+
+                                        <div class="detail-row">
+
+
+                                            <div class="detail-label">
+
+                                                Ngày trồng
+
+                                            </div>
+
+
+                                            <div class="detail-value">
+
 
                                                 <c:choose>
+
 
                                                     <c:when test="${plant.plantedDate != null}">
 
@@ -448,128 +904,186 @@
 
                                                     </c:when>
 
+
                                                     <c:otherwise>
+
                                                         Chưa cập nhật
+
                                                     </c:otherwise>
+
 
                                                 </c:choose>
 
-                                            </li>
+
+                                            </div>
 
 
-                                            <li class="mb-2">
+                                        </div>
 
-                                                <strong>Trạng thái:</strong>
+
+
+                                        <div class="detail-row">
+
+
+                                            <div class="detail-label">
+
+                                                Tình trạng
+
+                                            </div>
+
+
+                                            <div class="detail-value">
 
                                                 ${plant.healthStatus}
 
-                                            </li>
+                                            </div>
 
 
-                                            <li class="mb-2">
+                                        </div>
 
-                                                <strong>Ghi chú:</strong>
+
+
+                                        <div class="detail-row">
+
+
+                                            <div class="detail-label">
+
+                                                Ghi chú
+
+                                            </div>
+
+
+                                            <div class="detail-value">
+
 
                                                 <c:choose>
 
+
                                                     <c:when test="${not empty plant.note}">
+
                                                         ${plant.note}
+
                                                     </c:when>
 
+
                                                     <c:otherwise>
+
                                                         Không có ghi chú
+
                                                     </c:otherwise>
+
 
                                                 </c:choose>
 
-                                            </li>
 
-                                        </ul>
+                                            </div>
 
 
-                                        <h6 class="fw-bold text-primary border-bottom pb-2">
+                                        </div>
+
+
+
+                                        <%-- =====================================================
+                                             CHI TIẾT LỊCH TƯỚI
+                                             ===================================================== --%>
+
+                                        <div class="detail-section-title text-primary mt-4">
+
 
                                             <i class="fa-solid fa-calendar-days me-1"></i>
 
-                                            Lịch Chăm Sóc
+                                            Lịch tưới
 
-                                        </h6>
+
+                                        </div>
+
 
 
                                         <c:choose>
 
+
                                             <c:when test="${schedule != null}">
 
-                                                <ul class="list-unstyled small mb-4">
-
-                                                    <li class="mb-2">
-
-                                                        <strong>Hoạt động:</strong>
-
-                                                        <c:choose>
-
-                                                            <c:when test="${schedule.actionType == 'WATER'}">
-                                                                Tưới nước
-                                                            </c:when>
-
-                                                            <c:when test="${schedule.actionType == 'FERTILIZE'}">
-                                                                Bón phân
-                                                            </c:when>
-
-                                                            <c:when test="${schedule.actionType == 'PRUNE'}">
-                                                                Cắt tỉa
-                                                            </c:when>
-
-                                                            <c:when test="${schedule.actionType == 'REPOT'}">
-                                                                Thay đất / thay chậu
-                                                            </c:when>
-
-                                                            <c:otherwise>
-                                                                ${schedule.actionType}
-                                                            </c:otherwise>
-
-                                                        </c:choose>
-
-                                                    </li>
 
 
-                                                    <li class="mb-2">
+                                                <div class="detail-row">
 
-                                                        <strong>Tần suất:</strong>
+
+                                                    <div class="detail-label">
+
+                                                        Tần suất
+
+                                                    </div>
+
+
+                                                    <div class="detail-value">
 
                                                         ${schedule.frequencyDays} ngày/lần
 
-                                                    </li>
+                                                    </div>
 
 
-                                                    <li class="mb-2">
+                                                </div>
 
-                                                        <strong>Lần gần nhất:</strong>
+
+
+                                                <div class="detail-row">
+
+
+                                                    <div class="detail-label">
+
+                                                        Lần gần nhất
+
+                                                    </div>
+
+
+                                                    <div class="detail-value">
+
 
                                                         <c:choose>
+
 
                                                             <c:when test="${schedule.lastPerformed != null}">
 
                                                                 <fmt:formatDate
                                                                     value="${schedule.lastPerformed}"
-                                                                    pattern="dd/MM/yyyy HH:mm" />
+                                                                    pattern="dd/MM/yyyy" />
 
                                                             </c:when>
 
+
                                                             <c:otherwise>
+
                                                                 Chưa thực hiện
+
                                                             </c:otherwise>
+
 
                                                         </c:choose>
 
-                                                    </li>
+
+                                                    </div>
 
 
-                                                    <li>
+                                                </div>
 
-                                                        <strong>Lần tiếp theo:</strong>
+
+
+                                                <div class="detail-row">
+
+
+                                                    <div class="detail-label">
+
+                                                        Lần tiếp theo
+
+                                                    </div>
+
+
+                                                    <div class="detail-value">
+
 
                                                         <c:choose>
+
 
                                                             <c:when test="${schedule.nextDueDate != null}">
 
@@ -579,82 +1093,183 @@
 
                                                             </c:when>
 
+
                                                             <c:otherwise>
+
                                                                 Chưa thiết lập
+
                                                             </c:otherwise>
+
 
                                                         </c:choose>
 
-                                                    </li>
 
-                                                </ul>
+                                                    </div>
+
+
+                                                </div>
+
+
+
+                                                <div class="detail-row">
+
+
+                                                    <div class="detail-label">
+
+                                                        Trạng thái
+
+                                                    </div>
+
+
+                                                    <div class="detail-value">
+
+
+                                                        <c:choose>
+
+
+                                                            <c:when test="${waterStatus eq 'OVERDUE'}">
+
+                                                                <span class="badge bg-danger">
+
+                                                                    Quá hạn
+
+                                                                </span>
+
+                                                            </c:when>
+
+
+                                                            <c:when test="${waterStatus eq 'TODAY'}">
+
+                                                                <span class="badge bg-success">
+
+                                                                    Cần tưới hôm nay
+
+                                                                </span>
+
+                                                            </c:when>
+
+
+                                                            <c:when test="${waterStatus eq 'UPCOMING'}">
+
+                                                                <span class="badge bg-light text-dark">
+
+                                                                    Còn ${daysUntilWater} ngày
+
+                                                                </span>
+
+                                                            </c:when>
+
+
+                                                            <c:otherwise>
+
+                                                                <span class="text-muted">
+
+                                                                    Chưa xác định
+
+                                                                </span>
+
+                                                            </c:otherwise>
+
+
+                                                        </c:choose>
+
+
+                                                    </div>
+
+
+                                                </div>
+
 
                                             </c:when>
 
 
+
                                             <c:otherwise>
 
-                                                <p class="text-muted small">
-                                                    Cây này chưa có lịch tưới nước.
-                                                </p>
+
+                                                <div class="text-muted small">
+
+                                                    Cây này chưa có lịch tưới.
+
+                                                </div>
+
 
                                             </c:otherwise>
+
 
                                         </c:choose>
 
 
-                                        <h6 class="fw-bold text-warning border-bottom pb-2">
-
-                                            <i class="fa-solid fa-chart-line me-1"></i>
-
-                                            Nhật Ký Phát Triển
-
-                                        </h6>
-
-
-                                        <p class="text-muted small">
-                                            Nhật ký phát triển sẽ được kết nối với
-                                            bảng GrowthDiaries ở bước tiếp theo.
-                                        </p>
-
                                     </div>
 
+
                                 </div>
+
 
                             </div>
 
 
+
+                            <%-- Modal footer --%>
+
                             <div class="modal-footer">
+
+
+                                <a
+                                    href="${pageContext.request.contextPath}/Diary?plantId=${plant.plantId}"
+                                    class="btn btn-outline-warning">
+
+
+                                    <i class="fa-solid fa-chart-line me-1"></i>
+
+                                    Nhật ký phát triển
+
+
+                                </a>
+
 
                                 <button
                                     type="button"
                                     class="btn btn-secondary"
                                     data-bs-dismiss="modal">
 
+
                                     Đóng
+
 
                                 </button>
 
+
                             </div>
+
 
                         </div>
 
+
                     </div>
+
 
                 </div>
 
+
             </c:forEach>
+
 
         </div>
 
+
     </c:if>
 
+
 </div>
+
 
 
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
 </script>
 
+
 </body>
+
 </html>
