@@ -49,8 +49,7 @@ public class LoginServlet extends HttpServlet {
             if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                 response.sendRedirect(request.getContextPath() + "/admin/dashboard");
             } else {
-                // If it's a regular user, redirect to index
-                response.sendRedirect(request.getContextPath() + "/index.html");
+                  response.sendRedirect(request.getContextPath() + "/my-garden");
             }
         } else {
             request.setAttribute("error", "Tài khoản hoặc mật khẩu không chính xác!");

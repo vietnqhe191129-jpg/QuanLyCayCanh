@@ -52,6 +52,10 @@
             border-color: #81c784;
             box-shadow: 0 0 0 0.25rem rgba(129, 199, 132, 0.25);
         }
+        
+        .hover-underline:hover {
+            text-decoration: underline !important;
+        }
     </style>
 </head>
 <body>
@@ -65,7 +69,7 @@
     <div class="card-body p-4">
         
         <% if (request.getAttribute("error") != null) { %>
-            <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <div class="alert alert-danger d-flex align-items-center py-2" role="alert">
                 <i class="fa-solid fa-triangle-exclamation me-2"></i>
                 <div>
                     <%= request.getAttribute("error") %>
@@ -82,7 +86,7 @@
                 </div>
             </div>
             
-            <div class="mb-4">
+            <div class="mb-2">
                 <label for="password" class="form-label text-muted small fw-bold">Mật khẩu</label>
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-solid fa-lock"></i></span>
@@ -90,12 +94,25 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-green w-100 py-2.5 rounded-3 fw-bold shadow-sm mb-3">ĐĂNG NHẬP</button>
+            <!-- Quên mật khẩu  -->
+            <div class="text-end mb-4">
+                <a href="forgot-password.jsp" class="text-success text-decoration-none small fw-bold hover-underline">Quên mật khẩu?</a>
+            </div>
+
+            <button type="submit" class="btn btn-green w-100 py-2 rounded-3 fw-bold shadow-sm mb-3">ĐĂNG NHẬP</button>
+            
+            <!-- Tạo tài khoản mới -->
+            <div class="text-center mt-2 mb-2">
+                <span class="text-muted small">Chưa có tài khoản?</span>
+                <a href="register.jsp" class="text-success text-decoration-none fw-bold small hover-underline ms-1">Tạo tài khoản mới</a>
+            </div>
         </form>
 
-        <div class="text-center mt-3">
-            <p class="text-muted small mb-0">Tài khoản mặc định thử nghiệm:</p>
-            <code class="text-success">admin / 123</code> hoặc <code class="text-success">user1 / 123</code>
+        <hr class="text-muted opacity-25 mx-3 mt-3 mb-3">
+
+        <div class="text-center">
+            <p class="text-muted small mb-1">Tài khoản mặc định thử nghiệm:</p>
+            <code class="text-success">admin / 123</code> <span class="text-muted small">hoặc</span> <code class="text-success">user1 / 123</code>
         </div>
     </div>
 </div>

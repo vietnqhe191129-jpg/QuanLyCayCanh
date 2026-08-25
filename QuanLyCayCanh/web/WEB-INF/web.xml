@@ -16,4 +16,53 @@
         <servlet-name>WaterServlet</servlet-name>
         <url-pattern>/Water</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>HomeGardenServlet</servlet-name>
+        <servlet-class>Controllers.HomeGardenServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeletePlantServlet</servlet-name>
+        <servlet-class>Controllers.DeletePlantServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditPlantServlet</servlet-name>
+        <servlet-class>Controllers.EditPlantServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddPlantServlet</servlet-name>
+        <servlet-class>Controllers.AddPlantServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProfileServlet</servlet-name>
+        <servlet-class>Controllers.ProfileServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RegisterServlet</servlet-name>
+        <servlet-class>Controllers.RegisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HomeGardenServlet</servlet-name>
+        <url-pattern>/my-garden</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeletePlantServlet</servlet-name>
+        <url-pattern>/delete-plant</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditPlantServlet</servlet-name>
+        <url-pattern>/edit-plant</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddPlantServlet</servlet-name>
+        <url-pattern>/add-plant</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProfileServlet</servlet-name>
+        <url-pattern>/profile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
 </web-app>
