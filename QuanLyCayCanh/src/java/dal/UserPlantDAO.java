@@ -4,6 +4,7 @@ import Models.UserPlant;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserPlantDAO extends DBContext {
 
@@ -119,36 +120,65 @@ public class UserPlantDAO extends DBContext {
         }
         return false;
     }
+
     // Hàm thêm một cây mới vào cơ sở dữ liệu
     public boolean insertPlant(UserPlant p) {
         // Cột PlantedDate sử dụng hàm GETDATE() của SQL Server để tự động lấy ngày hiện tại
-        String sql = "INSERT INTO UserPlants (UserID, CategoryID, CustomName, LocationInHome, HealthStatus, ImageUrl, Note, PlantedDate) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, GETDATE())";
+        String sql = "INSERT INTO UserPlants (UserID, CategoryID, CustomName, LocationInHome, HealthStatus, ImageUrl, Note, PlantedDate) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, GETDATE())";
         try {
             java.sql.PreparedStatement stm = connection.prepareStatement(sql);
-            
+
             // Điền dữ liệu vào các dấu ?
             stm.setInt(1, p.getUserId());
-            
+
             // Xử lý CategoryID (Vì có thể người dùng chọn "Tự nhập tên riêng" -> Null)
             if (p.getCategoryId() != null) {
                 stm.setInt(2, p.getCategoryId());
             } else {
                 stm.setNull(2, java.sql.Types.INTEGER);
             }
-            
+
             stm.setString(3, p.getCustomName());
             stm.setString(4, p.getLocationInHome());
             stm.setString(5, p.getHealthStatus());
             stm.setString(6, p.getImageUrl());
             stm.setString(7, p.getNote());
-            
+
             // Thực thi lệnh INSERT
             return stm.executeUpdate() > 0;
-            
+
         } catch (Exception e) {
             System.out.println("Lỗi insertPlant: " + e.getMessage());
         }
         return false;
+    }
+
+    public List<UserPlant> getByUserId(int userId) {
+        List<UserPlant> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM UserPlants WHERE UserID = ?";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                UserPlant p = new UserPlant();
+                p.setPlantId(rs.getInt("PlantID"));
+                p.setCustomName(rs.getString("CustomName"));
+                p.setLocationInHome(rs.getString("LocationInHome"));
+                p.setHealthStatus(rs.getString("HealthStatus"));
+                p.setImageUrl(rs.getString("ImageUrl"));
+
+                list.add(p);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 }
