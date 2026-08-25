@@ -611,6 +611,24 @@ body {
 .diary-modal textarea {
     resize: vertical;
 }
+.plant-summary-content {
+    min-width: 0;
+}
+
+.plant-summary-value {
+    font-size: 1rem;
+    font-weight: 700;
+
+    color: var(--text);
+}
+
+.plant-summary-location {
+    margin-top: 3px;
+
+    color: var(--muted);
+
+    font-size: 0.78rem;
+}
 
 
 /* =========================================================

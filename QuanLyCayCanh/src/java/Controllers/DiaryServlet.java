@@ -2,11 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package Controllers;
 
 import Models.GrowthDiary;
+import Models.UserPlant;
 import dal.GrowthDiaryDAO;
+import dal.UserPlantDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,39 +16,52 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Part;
+import java.io.File;
+import java.nio.file.Paths;
+
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 5 * 1024 * 1024,
+        maxRequestSize = 10 * 1024 * 1024
+)
 /**
  *
  * @author vktuy
  */
 public class DiaryServlet extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DiaryServlet</title>");  
+            out.println("<title>Servlet DiaryServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DiaryServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet DiaryServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -55,22 +69,22 @@ public class DiaryServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-         String action = request.getParameter("action");
+            throws ServletException, IOException {
+        String action = request.getParameter("action");
 
         try {
 
             if ("edit".equals(action)) {
 
-                int diaryId =
-                        Integer.parseInt(
+                int diaryId
+                        = Integer.parseInt(
                                 request.getParameter("diaryId")
                         );
 
                 GrowthDiaryDAO dao = new GrowthDiaryDAO();
 
-                GrowthDiary diary =
-                        dao.getById(diaryId);
+                GrowthDiary diary
+                        = dao.getById(diaryId);
 
                 if (diary == null) {
                     response.sendRedirect(
@@ -91,16 +105,19 @@ public class DiaryServlet extends HttpServlet {
                 return;
             }
 
-            int plantId =
-                    Integer.parseInt(
+            int plantId
+                    = Integer.parseInt(
                             request.getParameter("plantId")
                     );
+            UserPlantDAO plantDAO = new UserPlantDAO();
+            UserPlant plant = plantDAO.getById(plantId);
 
-            GrowthDiaryDAO dao =
-                    new GrowthDiaryDAO();
+            request.setAttribute("plant", plant);
+            GrowthDiaryDAO dao
+                    = new GrowthDiaryDAO();
 
-            List<GrowthDiary> diaries =
-                    dao.getByPlantId(plantId);
+            List<GrowthDiary> diaries
+                    = dao.getByPlantId(plantId);
 
             request.setAttribute(
                     "plantId",
@@ -122,11 +139,12 @@ public class DiaryServlet extends HttpServlet {
                     request.getContextPath() + "/Care"
             );
         }
-    
+
     }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -134,13 +152,11 @@ public class DiaryServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-       request.setCharacterEncoding("UTF-8");
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
 
-         request.setCharacterEncoding("UTF-8");
-
-        String action =
-                request.getParameter("action");
+        String action
+                = request.getParameter("action");
 
         try {
 
@@ -173,44 +189,75 @@ public class DiaryServlet extends HttpServlet {
             );
         }
     }
+
     private void insertDiary(
             HttpServletRequest request,
             HttpServletResponse response)
-            throws IOException {
+            throws IOException,ServletException  {
 
-        int plantId =
-                Integer.parseInt(
+        int plantId
+                = Integer.parseInt(
                         request.getParameter("plantId")
                 );
 
-        String heightStr =
-                request.getParameter("heightCm");
+        String heightStr
+                = request.getParameter("heightCm");
 
-        String imageUrl =
-                request.getParameter("imageUrl");
+        Part imagePart = request.getPart("image");
 
-        String note =
-                request.getParameter("note");
+        String imageUrl = null;
+
+        if (imagePart != null && imagePart.getSize() > 0) {
+
+            String fileName = Paths.get(
+                    imagePart.getSubmittedFileName()
+            ).getFileName().toString();
+
+            // Tạo tên file mới để tránh trùng tên
+            String newFileName
+                    = System.currentTimeMillis() + "_" + fileName;
+
+            // Thư mục lưu ảnh
+            String uploadPath
+                    = getServletContext().getRealPath("/uploads");
+
+            File uploadDir = new File(uploadPath);
+
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            // Lưu file
+            imagePart.write(
+                    uploadPath
+                    + File.separator
+                    + newFileName
+            );
+
+            // Đường dẫn sẽ lưu vào database
+            imageUrl = "uploads/" + newFileName;
+        }
+
+        String note
+                = request.getParameter("note");
 
         Double heightCm = null;
 
         if (heightStr != null
                 && !heightStr.trim().isEmpty()) {
 
-            heightCm =
-                    Double.parseDouble(heightStr);
+            heightCm = Double.parseDouble(heightStr);
         }
 
-        GrowthDiary diary =
-                new GrowthDiary();
+        GrowthDiary diary = new GrowthDiary();
 
         diary.setPlantId(plantId);
         diary.setHeightCm(heightCm);
         diary.setImageUrl(imageUrl);
         diary.setNote(note);
 
-        GrowthDiaryDAO dao =
-                new GrowthDiaryDAO();
+        GrowthDiaryDAO dao
+                = new GrowthDiaryDAO();
 
         dao.insert(diary);
 
@@ -221,42 +268,41 @@ public class DiaryServlet extends HttpServlet {
         );
     }
 
-
     private void updateDiary(
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
 
-        int diaryId =
-                Integer.parseInt(
+        int diaryId
+                = Integer.parseInt(
                         request.getParameter("diaryId")
                 );
 
-        int plantId =
-                Integer.parseInt(
+        int plantId
+                = Integer.parseInt(
                         request.getParameter("plantId")
                 );
 
-        String heightStr =
-                request.getParameter("heightCm");
+        String heightStr
+                = request.getParameter("heightCm");
 
-        String imageUrl =
-                request.getParameter("imageUrl");
+        String imageUrl
+                = request.getParameter("imageUrl");
 
-        String note =
-                request.getParameter("note");
+        String note
+                = request.getParameter("note");
 
         Double heightCm = null;
 
         if (heightStr != null
                 && !heightStr.trim().isEmpty()) {
 
-            heightCm =
-                    Double.parseDouble(heightStr);
+            heightCm
+                    = Double.parseDouble(heightStr);
         }
 
-        GrowthDiary diary =
-                new GrowthDiary();
+        GrowthDiary diary
+                = new GrowthDiary();
 
         diary.setDiaryId(diaryId);
         diary.setPlantId(plantId);
@@ -264,8 +310,8 @@ public class DiaryServlet extends HttpServlet {
         diary.setImageUrl(imageUrl);
         diary.setNote(note);
 
-        GrowthDiaryDAO dao =
-                new GrowthDiaryDAO();
+        GrowthDiaryDAO dao
+                = new GrowthDiaryDAO();
 
         dao.update(diary);
 
@@ -276,24 +322,23 @@ public class DiaryServlet extends HttpServlet {
         );
     }
 
-
     private void deleteDiary(
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
 
-        int diaryId =
-                Integer.parseInt(
+        int diaryId
+                = Integer.parseInt(
                         request.getParameter("diaryId")
                 );
 
-        int plantId =
-                Integer.parseInt(
+        int plantId
+                = Integer.parseInt(
                         request.getParameter("plantId")
                 );
 
-        GrowthDiaryDAO dao =
-                new GrowthDiaryDAO();
+        GrowthDiaryDAO dao
+                = new GrowthDiaryDAO();
 
         dao.delete(diaryId);
 
@@ -303,8 +348,10 @@ public class DiaryServlet extends HttpServlet {
                 + plantId
         );
     }
-    /** 
+
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

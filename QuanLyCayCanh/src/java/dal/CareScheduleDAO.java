@@ -42,9 +42,9 @@ public class CareScheduleDAO extends DBContext {
     }
 
     public List<CareSchedule> getTodayTasks(int userId) {
-    List<CareSchedule> list = new ArrayList<>();
+        List<CareSchedule> list = new ArrayList<>();
 
-    String sql = """
+        String sql = """
         SELECT cs.*
         FROM CareSchedules cs
         JOIN UserPlants up ON cs.PlantID = up.PlantID
@@ -53,31 +53,31 @@ public class CareScheduleDAO extends DBContext {
         ORDER BY cs.NextDueDate ASC
     """;
 
-    try {
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, userId);
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userId);
 
-        ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-        while (rs.next()) {
-            CareSchedule cs = new CareSchedule();
+            while (rs.next()) {
+                CareSchedule cs = new CareSchedule();
 
-            cs.setScheduleId(rs.getInt("ScheduleID"));
-            cs.setPlantId(rs.getInt("PlantID"));
-            cs.setActionType(rs.getString("ActionType"));
-            cs.setFrequencyDays(rs.getInt("FrequencyDays"));
-            cs.setLastPerformed(rs.getTimestamp("LastPerformed"));
-            cs.setNextDueDate(rs.getTimestamp("NextDueDate"));
+                cs.setScheduleId(rs.getInt("ScheduleID"));
+                cs.setPlantId(rs.getInt("PlantID"));
+                cs.setActionType(rs.getString("ActionType"));
+                cs.setFrequencyDays(rs.getInt("FrequencyDays"));
+                cs.setLastPerformed(rs.getTimestamp("LastPerformed"));
+                cs.setNextDueDate(rs.getTimestamp("NextDueDate"));
 
-            list.add(cs);
+                list.add(cs);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return list;
     }
-
-    return list;
-}
 
     public void insert(CareSchedule cs) {
         String sql = """
@@ -175,4 +175,73 @@ public class CareScheduleDAO extends DBContext {
         }
         return null;
     }
+
+    public boolean insertWaterSchedule(
+            int plantId,
+            int frequencyDays,
+            Timestamp lastPerformed,
+            Timestamp nextDueDate) {
+
+        String sql = """
+        INSERT INTO CareSchedules
+        (
+            PlantID,
+            ActionType,
+            FrequencyDays,
+            LastPerformed,
+            NextDueDate
+        )
+        VALUES (?, 'WATER', ?, ?, ?)
+        """;
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setInt(1, plantId);
+            ps.setInt(2, frequencyDays);
+            ps.setTimestamp(3, lastPerformed);
+            ps.setTimestamp(4, nextDueDate);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    public boolean updateWaterSchedule(
+        int scheduleId,
+        int frequencyDays,
+        Timestamp lastPerformed,
+        Timestamp nextDueDate) {
+
+    String sql = """
+        UPDATE CareSchedules
+
+        SET FrequencyDays = ?,
+            LastPerformed = ?,
+            NextDueDate = ?
+
+        WHERE ScheduleID = ?
+          AND ActionType = 'WATER'
+        """;
+
+    try {
+        
+
+        PreparedStatement ps = connection.prepareStatement(sql);
+
+        ps.setInt(1, frequencyDays);
+        ps.setTimestamp(2, lastPerformed);
+        ps.setTimestamp(3, nextDueDate);
+        ps.setInt(4, scheduleId);
+
+        return ps.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return false;
+}
 }

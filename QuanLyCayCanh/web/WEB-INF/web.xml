@@ -20,6 +20,10 @@
         <servlet-name>CareLogServlet</servlet-name>
         <servlet-class>Controllers.CareLogServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>WaterScheduleServlet</servlet-name>
+        <servlet-class>Controllers.WaterScheduleServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CareServlet</servlet-name>
         <url-pattern>/Care</url-pattern>
@@ -87,5 +91,9 @@
     <servlet-mapping>
         <servlet-name>CareLogServlet</servlet-name>
         <url-pattern>/CareLog</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WaterScheduleServlet</servlet-name>
+        <url-pattern>/WaterSchedule</url-pattern>
     </servlet-mapping>
 </web-app>

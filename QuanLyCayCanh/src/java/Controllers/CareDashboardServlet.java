@@ -62,8 +62,16 @@ public class CareDashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Tạm thời để test
-        int userId = 3;
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        User user = (User) session.getAttribute("user");
+
+        int userId = user.getUserID();
 
         UserPlantDAO plantDAO = new UserPlantDAO();
         CareScheduleDAO scheduleDAO = new CareScheduleDAO();

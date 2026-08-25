@@ -244,9 +244,9 @@ body {
 
     background:
         linear-gradient(
-            135deg,
-            #eef4ef,
-            #f8faf8
+        135deg,
+        #eef4ef,
+        #f8faf8
         );
 
     color: #a1afa5;
@@ -532,9 +532,9 @@ body {
 
     background:
         linear-gradient(
-            135deg,
-            #eef4ef,
-            #f8faf8
+        135deg,
+        #eef4ef,
+        #f8faf8
         );
 
     border-radius: 14px;
@@ -634,5 +634,117 @@ body {
 
         text-align: left;
     }
+    .care-label-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
+        margin-bottom: 7px;
+    }
+
+    .care-label-row .care-label {
+        margin-bottom: 0;
+    }
+
+
+    .btn-edit-schedule {
+        width: 28px;
+        height: 28px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        padding: 0;
+
+        border: none;
+        outline: none;
+
+        border-radius: 8px;
+
+        background: #eef5ff;
+        color: #4d7fae;
+
+        font-size: 0.72rem;
+
+        cursor: pointer;
+
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            transform 0.15s ease;
+    }
+
+    .btn-edit-schedule:hover {
+        background: #dcecff;
+        color: #2466a3;
+
+        transform: translateY(-1px);
+    }
+    .btn-edit-schedule:active {
+        transform: translateY(0);
+    }
+
+    .btn-edit-schedule:focus {
+        outline: none;
+
+        box-shadow:
+            0 0 0 3px
+            rgba(52, 120, 201, 0.12);
+    }
+
+    .care-no-schedule {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        font-size: 0.85rem;
+    }
+
+
+    .btn-schedule-link {
+        padding: 0;
+
+        background: transparent;
+        border: none;
+
+        color: var(--primary);
+
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+    .btn-schedule-link:hover {
+        text-decoration: underline;
+    }
+
+
+    .schedule-modal {
+        overflow: hidden;
+
+        border: none;
+        border-radius: 18px;
+    }
+
+    .schedule-modal .modal-header {
+        padding: 20px 22px;
+
+        border-bottom: 1px solid var(--border);
+    }
+
+    .schedule-modal .modal-body {
+        padding: 22px;
+    }
+
+    .schedule-modal .modal-footer {
+        padding: 15px 22px;
+
+        background: #fafbfa;
+
+        border-top: 1px solid var(--border);
+    }
 }
