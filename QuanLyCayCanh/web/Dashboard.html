@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plant Care — My Jungle Dashboard</title>
+    <link rel="stylesheet" href="./CSS.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">✦</div>
+          <div>
+            <strong>Plant Care</strong>
+            <span>Indoor Garden Admin</span>
+          </div>
+        </div>
+
+        <nav class="main-nav" aria-label="Main navigation">
+          <span class="nav-label">YOUR SPACE</span>
+          <a class="nav-item active" href="#collection"><span>▦</span> My Jungle</a>
+          <a class="nav-item" href="#tasks"><span>▣</span> Schedule</a>
+          <a class="nav-item" href="#collection"><span>▤</span> Plant Library</a>
+          <a class="nav-item" href="#tip"><span>▥</span> Health Stats</a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <a class="nav-item" href="#settings"><span>⚙</span> Settings</a>
+          <div class="profile">
+            <div class="avatar">AG</div>
+            <div>
+              <strong>Alex Gardner</strong>
+              <span>Premium Member</span>
+            </div>
+            <span class="profile-chevron">⌄</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="mobile-brand">Plant Care</div>
+          <h1>My Jungle Dashboard</h1>
+          <div class="topbar-actions">
+            <label class="search">
+              <span>⌕</span>
+              <input type="search" placeholder="Search plants..." />
+            </label>
+            <a class="add-button" href="#add-plant">＋ Add Plant</a>
+            <button class="icon-button" aria-label="Notifications">♧</button>
+          </div>
+        </header>
+
+        <div class="content">
+          <section class="welcome">
+            <div>
+              <p class="eyebrow">MONDAY, JUNE 12 · 8:42 AM</p>
+              <h2>Good morning, <em>Alex.</em></h2>
+              <p class="muted">A little care goes a long way.</p>
+            </div>
+            <span class="air">Indoor air · 48% humidity</span>
+          </section>
+
+          <section id="tasks" class="section">
+            <div class="section-heading">
+              <h3>Daily Tasks</h3>
+              <span class="muted">3 small wins today</span>
+            </div>
+            <div class="task-grid">
+              <a class="task-card" href="#collection">
+                <span class="task-icon green">◔</span>
+                <span><strong>Today’s Watering</strong><small>4 plants need water</small></span>
+                <span class="check">✓</span>
+              </a>
+              <a class="task-card" href="#collection">
+                <span class="task-icon gold">♨</span>
+                <span><strong>Feeding Schedule</strong><small>2 plants need nutrients</small></span>
+                <span class="check">✓</span>
+              </a>
+              <a class="task-card" href="#collection">
+                <span class="task-icon blue">☼</span>
+                <span><strong>Sunlight Check</strong><small>Rotating 3 sun-lovers</small></span>
+                <span class="check">✓</span>
+              </a>
+            </div>
+          </section>
+
+          <section id="collection" class="section">
+            <div class="section-heading collection-heading">
+              <div>
+                <h3>My Plant Collection</h3>
+                <span class="muted">4 of 4 plants showing</span>
+              </div>
+              <div class="filters">
+                <button class="filter active">All plants</button>
+                <button class="filter">Needs water</button>
+                <button class="filter">Favorites</button>
+                <button class="icon-button small">⌘</button>
+              </div>
+            </div>
+
+            <div class="plant-grid">
+              <article class="plant-card">
+                <div class="plant-photo photo-one"><span class="room">LIVING ROOM</span></div>
+                <div class="plant-info">
+                  <h4>Monstera Deliciosa</h4>
+                  <p>Swiss Cheese Plant</p>
+                  <div class="hydration"><span>HYDRATION</span><span>75%</span></div>
+                  <div class="progress"><i style="width:75%"></i></div>
+                  <div class="plant-footer"><span>♧ Medium</span><span>▣ 4 days</span><button>◔</button></div>
+                </div>
+              </article>
+
+              <article class="plant-card">
+                <div class="plant-photo photo-two"><span class="room">BEDROOM</span></div>
+                <div class="plant-info">
+                  <h4>Sansevieria</h4>
+                  <p>Snake Plant</p>
+                  <div class="hydration"><span>HYDRATION</span><span class="danger-text">20%</span></div>
+                  <div class="progress"><i class="danger" style="width:20%"></i></div>
+                  <div class="plant-footer danger-text"><span>♧ Low</span><span>▣ Overdue</span><button>◔</button></div>
+                </div>
+              </article>
+
+              <article class="plant-card">
+                <div class="plant-photo photo-three"><span class="room">OFFICE</span></div>
+                <div class="plant-info">
+                  <h4>Ficus Lyrata</h4>
+                  <p>Fiddle Leaf Fig</p>
+                  <div class="hydration"><span>HYDRATION</span><span>45%</span></div>
+                  <div class="progress"><i style="width:45%"></i></div>
+                  <div class="plant-footer"><span>♧ High</span><span>▣ 12 days ago</span><button>◔</button></div>
+                </div>
+              </article>
+
+              <article class="plant-card">
+                <div class="plant-photo photo-four"><span class="room">KITCHEN</span></div>
+                <div class="plant-info">
+                  <h4>Epipremnum</h4>
+                  <p>Golden Pothos</p>
+                  <div class="hydration"><span>HYDRATION</span><span>90%</span></div>
+                  <div class="progress"><i style="width:90%"></i></div>
+                  <div class="plant-footer"><span>♧ Indirect</span><span>▣ 8 days</span><button>◔</button></div>
+                </div>
+              </article>
+
+              <a id="add-plant" class="add-card" href="#add-plant">
+                <span class="add-circle">＋</span>
+                <strong>Growing your collection?</strong>
+                <span>Add a new plant to track its needs and keep it thriving in your indoor jungle.</span>
+                <b>Add a new plant ＋</b>
+              </a>
+            </div>
+          </section>
+
+          <aside id="tip" class="tip">
+            <span>♧</span>
+            <p><strong>Little tip:</strong> Rotate your fiddle leaf fig a quarter turn each week for an even, happy canopy.</p>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
