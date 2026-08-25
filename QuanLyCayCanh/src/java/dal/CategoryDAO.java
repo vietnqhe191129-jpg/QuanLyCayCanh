@@ -96,4 +96,42 @@ public class CategoryDAO extends DBContext {
         }
         return false;
     }
+
+    public List<PlantCategory> searchAndSortCategories(String search, String sort) {
+        List<PlantCategory> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM PlantCategories WHERE 1=1 ");
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(" AND (CategoryName LIKE ? OR ScientificName LIKE ?) ");
+        }
+        if ("1".equals(sort)) {
+            sql.append(" ORDER BY CategoryID ASC ");
+        } else if ("0".equals(sort)) {
+            sql.append(" ORDER BY CategoryID DESC ");
+        } else {
+            sql.append(" ORDER BY CategoryID DESC ");
+        }
+        try (PreparedStatement stm = connection.prepareStatement(sql.toString())) {
+            if (search != null && !search.trim().isEmpty()) {
+                String pattern = "%" + search.trim() + "%";
+                stm.setString(1, pattern);
+                stm.setString(2, pattern);
+            }
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new PlantCategory(
+                        rs.getInt("CategoryID"),
+                        rs.getString("CategoryName"),
+                        rs.getString("ScientificName"),
+                        rs.getString("Description"),
+                        rs.getInt("DefaultWaterDays"),
+                        rs.getString("LightRequirement"),
+                        rs.getString("ImageUrl")
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("CategoryDAO.searchAndSortCategories: " + e.getMessage());
+        }
+        return list;
+    }
 }

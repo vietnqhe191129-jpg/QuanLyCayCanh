@@ -23,7 +23,7 @@ public class AdminCategoryServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-        
+
         User loggedUser = (User) session.getAttribute("user");
         if (!"ADMIN".equalsIgnoreCase(loggedUser.getRole())) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền truy cập trang này!");
@@ -31,41 +31,55 @@ public class AdminCategoryServlet extends HttpServlet {
         }
 
         CategoryDAO categoryDAO = new CategoryDAO();
-        String action = request.getParameter("action");
 
-        if ("delete".equals(action)) {
+        // Xử lý Delete (mode1 = 1)
+        String mode1 = request.getParameter("mode1");
+        if ("1".equals(mode1)) {
             try {
                 int id = Integer.parseInt(request.getParameter("id"));
                 categoryDAO.deleteCategory(id);
+                request.setAttribute("success", "Xoá loài cây thành công!");
             } catch (NumberFormatException e) {
-                System.out.println("Delete category ID format error: " + e.getMessage());
-            }
-            response.sendRedirect(request.getContextPath() + "/admin/categories");
-            return;
-        } else if ("edit".equals(action)) {
-            try {
-                int id = Integer.parseInt(request.getParameter("id"));
-                PlantCategory categoryToEdit = categoryDAO.getCategoryById(id);
-                request.setAttribute("categoryToEdit", categoryToEdit);
-            } catch (NumberFormatException e) {
-                System.out.println("Edit category ID format error: " + e.getMessage());
+                System.out.println("Lỗi parse id mode1: " + e.getMessage());
             }
         }
 
-        List<PlantCategory> list = categoryDAO.getAllCategories();
-        request.setAttribute("categoriesList", list);
+        // Xử lý Select (mode2 = 1) để load dữ liệu lên form
+        String mode2 = request.getParameter("mode2");
+        if ("1".equals(mode2)) {
+            try {
+                int id = Integer.parseInt(request.getParameter("id"));
+                PlantCategory p = categoryDAO.getCategoryById(id);
+                request.setAttribute("p", p);
+                request.setAttribute("categoryToEdit", p);
+            } catch (NumberFormatException e) {
+                System.out.println("Lỗi parse id mode2: " + e.getMessage());
+            }
+        }
+
+        // Xử lý Search & Sort
+        String searchValue = request.getParameter("searchValue");
+        String sort = request.getParameter("sort");
+        List<PlantCategory> data = categoryDAO.searchAndSortCategories(searchValue, sort);
+
+        request.setAttribute("data", data);
+        request.setAttribute("categoriesList", data);
+        request.setAttribute("searchValue", searchValue);
+        request.setAttribute("sort", sort);
+
         request.getRequestDispatcher("/admin-categories.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-        
+
         User loggedUser = (User) session.getAttribute("user");
         if (!"ADMIN".equalsIgnoreCase(loggedUser.getRole())) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền truy cập trang này!");
@@ -73,37 +87,70 @@ public class AdminCategoryServlet extends HttpServlet {
         }
 
         CategoryDAO categoryDAO = new CategoryDAO();
-        String action = request.getParameter("action");
 
-        String name = request.getParameter("categoryName");
+        String idStr = request.getParameter("id");
+        String name = request.getParameter("name");
         String scientificName = request.getParameter("scientificName");
         String description = request.getParameter("description");
         String waterDaysStr = request.getParameter("defaultWaterDays");
         String light = request.getParameter("lightRequirement");
-        String imageUrl = request.getParameter("imageUrl");
 
-        int waterDays = 2; // default fallback
+        int waterDays = 2;
         try {
             if (waterDaysStr != null && !waterDaysStr.trim().isEmpty()) {
-                waterDays = Integer.parseInt(waterDaysStr);
+                waterDays = Integer.parseInt(waterDaysStr.trim());
             }
         } catch (NumberFormatException e) {
             System.out.println("waterDays format error: " + e.getMessage());
         }
 
-        if ("add".equals(action)) {
-            PlantCategory cat = new PlantCategory(0, name, scientificName, description, waterDays, light, imageUrl);
-            categoryDAO.addCategory(cat);
-        } else if ("edit".equals(action)) {
-            try {
-                int id = Integer.parseInt(request.getParameter("id"));
-                PlantCategory cat = new PlantCategory(id, name, scientificName, description, waterDays, light, imageUrl);
-                categoryDAO.updateCategory(cat);
-            } catch (NumberFormatException e) {
-                System.out.println("Update category ID format error: " + e.getMessage());
+        // Nút ADD
+        if (request.getParameter("add") != null) {
+            if (name == null || name.trim().isEmpty()) {
+                request.setAttribute("error", "Tên loài cây không được để trống!");
+            } else {
+                PlantCategory cat = new PlantCategory(0, name.trim(),
+                        scientificName != null ? scientificName.trim() : "",
+                        description != null ? description.trim() : "",
+                        waterDays, light, "");
+                boolean ok = categoryDAO.addCategory(cat);
+                if (ok) {
+                    request.setAttribute("success", "Thêm loài cây mới thành công!");
+                } else {
+                    request.setAttribute("error", "Đã có lỗi khi thêm loài cây!");
+                }
             }
         }
 
-        response.sendRedirect(request.getContextPath() + "/admin/categories");
+        // Nút UPDATE
+        if (request.getParameter("update") != null) {
+            try {
+                int id = Integer.parseInt(idStr);
+                PlantCategory existing = categoryDAO.getCategoryById(id);
+                String image = existing != null && existing.getImageUrl() != null ? existing.getImageUrl() : "";
+                
+                PlantCategory cat = new PlantCategory(id, name != null ? name.trim() : "",
+                        scientificName != null ? scientificName.trim() : "",
+                        description != null ? description.trim() : "",
+                        waterDays, light, image);
+                boolean ok = categoryDAO.updateCategory(cat);
+                if (ok) {
+                    request.setAttribute("success", "Cập nhật loài cây thành công!");
+                } else {
+                    request.setAttribute("error", "Cập nhật thất bại!");
+                }
+            } catch (NumberFormatException e) {
+                request.setAttribute("error", "Vui lòng chọn loài cây hợp lệ để cập nhật!");
+            }
+        }
+
+        // Load lại danh sách
+        String searchValue = request.getParameter("searchValue");
+        String sort = request.getParameter("sort");
+        List<PlantCategory> data = categoryDAO.searchAndSortCategories(searchValue, sort);
+
+        request.setAttribute("data", data);
+        request.setAttribute("categoriesList", data);
+        request.getRequestDispatcher("/admin-categories.jsp").forward(request, response);
     }
 }

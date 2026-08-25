@@ -84,13 +84,13 @@ public class RegisterServlet extends HttpServlet {
         }
         
         // Lưu mới
-        if (dao.registerUser(user, pass, name, email, phone)) {
-            request.setAttribute("message", "Tạo tài khoản thành công! Vui lòng đăng nhập.");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        } else {
-            request.setAttribute("error", "Đã xảy ra lỗi hệ thống. Vui lòng thử lại!");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
-        }
+//        if (dao.registerUser(user, pass, name, email, phone)) {
+//            request.setAttribute("message", "Tạo tài khoản thành công! Vui lòng đăng nhập.");
+//            request.getRequestDispatcher("login.jsp").forward(request, response);
+//        } else {
+//            request.setAttribute("error", "Đã xảy ra lỗi hệ thống. Vui lòng thử lại!");
+//            request.getRequestDispatcher("register.jsp").forward(request, response);
+//        }
     }
 
     /** 

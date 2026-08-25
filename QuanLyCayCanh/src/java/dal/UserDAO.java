@@ -88,35 +88,143 @@ public class UserDAO extends DBContext {
     // Kiểm tra trùng lặp Username hoặc Email
 
     public boolean checkDuplicate(String username, String email) {
-        String sql = "SELECT * FROM Users WHERE Username = ? OR Email = ?";
-        try {
-            java.sql.PreparedStatement stm = connection.prepareStatement(sql);
+        String sql = "SELECT UserID FROM Users WHERE Username = ? OR Email = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, username);
             stm.setString(2, email);
-            java.sql.ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                return true; // Đã tồn tại
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return true; // Đã tồn tại
+                }
             }
         } catch (Exception e) {
             System.out.println("Lỗi checkDuplicate: " + e.getMessage());
+            e.printStackTrace();
         }
         return false;
     }
 
-// Thêm User mới
-    public boolean registerUser(String username, String password, String fullName, String email, String phone) {
-        String sql = "INSERT INTO Users (Username, Password, FullName, Email, Phone) VALUES (?, ?, ?, ?, ?)";
-        try {
-            java.sql.PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, username);
-            stm.setString(2, password);
-            stm.setString(3, fullName);
-            stm.setString(4, email);
-            stm.setString(5, phone);
-            return stm.executeUpdate() > 0;
+    public boolean addUser(User user) {
+        String sql = "INSERT INTO Users (Username, Password, FullName, Email, Phone, Role, Status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, user.getUsername());
+            stm.setString(2, user.getPassword());
+            stm.setString(3, user.getFullName());
+            stm.setString(4, user.getEmail());
+            stm.setString(5, user.getPhone());
+            stm.setString(6, user.getRole());
+            stm.setBoolean(7, user.isStatus());
+            int rows = stm.executeUpdate();
+            System.out.println("UserDAO.addUser rows affected: " + rows);
+            return rows > 0;
         } catch (Exception e) {
-            System.out.println("Lỗi registerUser: " + e.getMessage());
+            System.out.println("UserDAO.addUser ERROR: " + e.getMessage());
+            e.printStackTrace();
         }
         return false;
+    }
+
+    public User getUserById(int id) {
+        String sql = "SELECT * FROM Users WHERE UserID = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, id);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                            rs.getInt("UserID"),
+                            rs.getString("Username"),
+                            rs.getString("Password"),
+                            rs.getString("FullName"),
+                            rs.getString("Email"),
+                            rs.getString("Phone"),
+                            rs.getString("Role"),
+                            rs.getBoolean("Status"),
+                            rs.getTimestamp("CreatedAt")
+                    );
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("UserDAO.getUserById: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public boolean updateUser(User user) {
+        String sql;
+        boolean hasPass = user.getPassword() != null && !user.getPassword().trim().isEmpty();
+        if (hasPass) {
+            sql = "UPDATE Users SET FullName = ?, Email = ?, Phone = ?, Role = ?, Status = ?, Password = ? WHERE UserID = ?";
+        } else {
+            sql = "UPDATE Users SET FullName = ?, Email = ?, Phone = ?, Role = ?, Status = ? WHERE UserID = ?";
+        }
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, user.getFullName());
+            stm.setString(2, user.getEmail());
+            stm.setString(3, user.getPhone());
+            stm.setString(4, user.getRole());
+            stm.setBoolean(5, user.isStatus());
+            if (hasPass) {
+                stm.setString(6, user.getPassword());
+                stm.setInt(7, user.getUserID());
+            } else {
+                stm.setInt(6, user.getUserID());
+            }
+            return stm.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println("UserDAO.updateUser: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean deleteUser(int id) {
+        String sql = "DELETE FROM Users WHERE UserID = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, id);
+            return stm.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println("UserDAO.deleteUser: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public List<User> searchAndSortUsers(String search, String sort) {
+        List<User> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM Users WHERE 1=1 ");
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(" AND (Username LIKE ? OR FullName LIKE ? OR Email LIKE ?) ");
+        }
+        if ("1".equals(sort)) {
+            sql.append(" ORDER BY UserID ASC ");
+        } else if ("0".equals(sort)) {
+            sql.append(" ORDER BY UserID DESC ");
+        } else {
+            sql.append(" ORDER BY CreatedAt DESC ");
+        }
+        try (PreparedStatement stm = connection.prepareStatement(sql.toString())) {
+            if (search != null && !search.trim().isEmpty()) {
+                String pattern = "%" + search.trim() + "%";
+                stm.setString(1, pattern);
+                stm.setString(2, pattern);
+                stm.setString(3, pattern);
+            }
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new User(
+                            rs.getInt("UserID"),
+                            rs.getString("Username"),
+                            rs.getString("Password"),
+                            rs.getString("FullName"),
+                            rs.getString("Email"),
+                            rs.getString("Phone"),
+                            rs.getString("Role"),
+                            rs.getBoolean("Status"),
+                            rs.getTimestamp("CreatedAt")
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("UserDAO.searchAndSortUsers: " + e.getMessage());
+        }
+        return list;
     }
 }
