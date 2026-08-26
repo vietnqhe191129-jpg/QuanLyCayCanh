@@ -227,7 +227,7 @@
 
                                     <c:if test="${not empty diary.imageUrl}">
                                         <div class="diary-image-wrapper">
-                                            <img src="${pageContext.request.contextPath}/${diary.imageUrl}"
+                                            <img src="${diary.imageUrl}"
                                                  class="diary-image"
                                                  alt="Ảnh phát triển của cây">
                                         </div>
@@ -440,13 +440,13 @@
 
                                 <label class="form-label">
                                     <i class="fa-regular fa-image me-1"></i>
-                                    Ảnh cây
+                                    Link ảnh
                                 </label>
 
-                                <input type="file"
-                                       name="image"
+                                <input type="text"
+                                       name="imageUrl"
                                        class="form-control"
-                                       accept="image/*">
+                                       placeholder="Nhập url ảnh cây">
 
                                 <div class="form-text">
                                     Chọn ảnh để lưu lại cột mốc phát triển của cây.

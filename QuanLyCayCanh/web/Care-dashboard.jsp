@@ -105,138 +105,138 @@
                  SUMMARY
                  ===================================================== --%>
 
-<!--              <div class="row g-3 mb-5">
+            <!--              <div class="row g-3 mb-5">
+            
+            
+            <%-- Tổng số cây --%>
 
+            <div class="col-md-4">
 
-                <%-- Tổng số cây --%>
+                <div class="summary-card">
 
-                <div class="col-md-4">
+                    <div class="summary-icon green">
 
-                    <div class="summary-card">
-
-                        <div class="summary-icon green">
-
-                            <i class="fa-solid fa-seedling"></i>
-
-                        </div>
-
-
-                        <div class="summary-value">
-
-                            ${fn:length(plants)}
-
-                        </div>
-
-
-                        <div class="summary-label">
-
-                            Tổng số cây
-
-                        </div>
+                        <i class="fa-solid fa-seedling"></i>
 
                     </div>
 
-                </div>
+
+                    <div class="summary-value">
+
+            ${fn:length(plants)}
+
+        </div>
+
+
+        <div class="summary-label">
+
+            Tổng số cây
+
+        </div>
+
+    </div>
+
+</div>
 
 
 
-                <%-- Cây có lịch tưới --%>
+            <%-- Cây có lịch tưới --%>
 
-                <div class="col-md-4">
+            <div class="col-md-4">
 
-                    <div class="summary-card">
+                <div class="summary-card">
 
-                        <div class="summary-icon blue">
+                    <div class="summary-icon blue">
 
-                            <i class="fa-solid fa-droplet"></i>
-
-                        </div>
-
-
-                        <div class="summary-value">
-
-                            <c:set var="scheduleCount"
-                                   value="0" />
-
-                            <c:forEach var="summaryPlant"
-                                       items="${plants}">
-
-                                <c:set var="summarySchedule"
-                                       value="${scheduleMap[summaryPlant.plantId]}" />
-
-                                <c:if test="${summarySchedule != null}">
-
-                                    <c:set var="scheduleCount"
-                                           value="${scheduleCount + 1}" />
-
-                                </c:if>
-
-                            </c:forEach>
-
-                            ${scheduleCount}
-
-                        </div>
-
-
-                        <div class="summary-label">
-
-                            Cây có lịch tưới
-
-                        </div>
+                        <i class="fa-solid fa-droplet"></i>
 
                     </div>
 
-                </div>-->
+
+                    <div class="summary-value">
+
+            <c:set var="scheduleCount"
+                   value="0" />
+
+            <c:forEach var="summaryPlant"
+                       items="${plants}">
+
+                <c:set var="summarySchedule"
+                       value="${scheduleMap[summaryPlant.plantId]}" />
+
+                <c:if test="${summarySchedule != null}">
+
+                    <c:set var="scheduleCount"
+                           value="${scheduleCount + 1}" />
+
+                </c:if>
+
+            </c:forEach>
+
+            ${scheduleCount}
+
+        </div>
+
+
+        <div class="summary-label">
+
+            Cây có lịch tưới
+
+        </div>
+
+    </div>
+
+</div>-->
 
 
 
-<!--                <%-- Cây cần chú ý --%>
+            <!--                <%-- Cây cần chú ý --%>
+            
+                            <div class="col-md-4">
+            
+                                <div class="summary-card">
+            
+                                    <div class="summary-icon red">
+            
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+            
+                                    </div>
+            
+            
+                                    <div class="summary-value">
+            
+            <c:set var="warningCount"
+                   value="0" />
 
-                <div class="col-md-4">
+            <c:forEach var="summaryPlant"
+                       items="${plants}">
 
-                    <div class="summary-card">
+                <c:if test="${summaryPlant.healthStatus ne 'Khỏe mạnh'}">
 
-                        <div class="summary-icon red">
+                    <c:set var="warningCount"
+                           value="${warningCount + 1}" />
 
-                            <i class="fa-solid fa-triangle-exclamation"></i>
+                </c:if>
 
-                        </div>
+            </c:forEach>
 
+            ${warningCount}
 
-                        <div class="summary-value">
-
-                            <c:set var="warningCount"
-                                   value="0" />
-
-                            <c:forEach var="summaryPlant"
-                                       items="${plants}">
-
-                                <c:if test="${summaryPlant.healthStatus ne 'Khỏe mạnh'}">
-
-                                    <c:set var="warningCount"
-                                           value="${warningCount + 1}" />
-
-                                </c:if>
-
-                            </c:forEach>
-
-                            ${warningCount}
-
-                        </div>
+        </div>
 
 
-                        <div class="summary-label">
+        <div class="summary-label">
 
-                            Cây cần chú ý
+            Cây cần chú ý
 
-                        </div>
+        </div>
 
-                    </div>
+    </div>
 
-                </div>
+</div>
 
-            </div> 
-                            -->
+</div> 
+            -->
 
 
             <%-- =====================================================
@@ -308,13 +308,19 @@
 
             <c:if test="${not empty plants}">
 
-
+                <div class="mb-3">
+                    <input type="text"
+                           id="plantSearchInput"
+                           class="form-control"
+                           placeholder="Tìm kiếm theo tên cây"
+                           >
+                </div>
                 <div class="row g-4">
 
 
                     <c:forEach var="plant"
                                items="${plants}">
-
+                        
 
                         <%-- Schedule WATER của cây --%>
 
@@ -356,7 +362,8 @@
                              PLANT CARD
                              ================================================= --%>
 
-                        <div class="col-sm-6 col-lg-4 col-xl-3">
+                        <div class="col-sm-6 col-lg-4 col-xl-3 plant-item"
+                             data-name="${plant.customName}">
 
 
                             <div class="plant-card"
@@ -1833,7 +1840,15 @@
 
                     </c:forEach>
 
+                    <div id="noResult"
+                             class="col-12"
+                             style="display: none;">
 
+                            <div class="alert alert-secondary text-center">
+                                Không tìm thấy cây phù hợp.
+                            </div>
+
+                        </div>
                 </div>
 
 
@@ -1850,7 +1865,72 @@
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
         </script>
 
+        <script>
 
+            const searchInput =
+                    document.getElementById("plantSearchInput");
+
+            const plantItems =
+                    document.querySelectorAll(".plant-item");
+
+            const noResult =
+                    document.getElementById("noResult");
+
+
+            function removeVietnameseTones(str) {
+
+                return str
+                        .normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "")
+                        .replace(/đ/g, "d")
+                        .replace(/Đ/g, "D")
+                        .toLowerCase();
+            }
+
+
+            searchInput.addEventListener("input", function () {
+
+                const keyword =
+                        removeVietnameseTones(
+                                searchInput.value.trim()
+                                );
+
+                let found = 0;
+
+
+                plantItems.forEach(function (item) {
+
+                    const plantName =
+                            removeVietnameseTones(
+                                    item.getAttribute("data-name")
+                                    );
+
+
+                    if (plantName.includes(keyword)) {
+
+                        item.style.display = "";
+                        found++;
+
+                    } else {
+
+                        item.style.display = "none";
+                    }
+
+                });
+
+
+                if (found === 0) {
+
+                    noResult.style.display = "";
+
+                } else {
+
+                    noResult.style.display = "none";
+                }
+
+            });
+
+        </script>
     </body>
 
 </html>

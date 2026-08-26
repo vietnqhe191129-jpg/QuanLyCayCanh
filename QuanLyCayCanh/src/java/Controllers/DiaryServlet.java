@@ -203,40 +203,7 @@ public class DiaryServlet extends HttpServlet {
         String heightStr
                 = request.getParameter("heightCm");
 
-        Part imagePart = request.getPart("image");
-
-        String imageUrl = null;
-
-        if (imagePart != null && imagePart.getSize() > 0) {
-
-            String fileName = Paths.get(
-                    imagePart.getSubmittedFileName()
-            ).getFileName().toString();
-
-            // Tạo tên file mới để tránh trùng tên
-            String newFileName
-                    = System.currentTimeMillis() + "_" + fileName;
-
-            // Thư mục lưu ảnh
-            String uploadPath
-                    = getServletContext().getRealPath("/uploads");
-
-            File uploadDir = new File(uploadPath);
-
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
-
-            // Lưu file
-            imagePart.write(
-                    uploadPath
-                    + File.separator
-                    + newFileName
-            );
-
-            // Đường dẫn sẽ lưu vào database
-            imageUrl = "uploads/" + newFileName;
-        }
+        String imageUrl=request.getParameter("imageUrl");
 
         String note
                 = request.getParameter("note");
